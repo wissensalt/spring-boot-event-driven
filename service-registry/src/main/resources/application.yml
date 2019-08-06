@@ -1,0 +1,37 @@
+#============================================================================
+# SPRING
+#============================================================================
+spring:
+  profiles :
+    active : local
+  application:
+    name: discovery-server
+#============================================================================
+# SERVER
+#============================================================================
+server:
+  port: 8761
+
+#============================================================================
+# EUREKA
+#============================================================================
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: false
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      default-zone: http://${eureka.instance.hostname}:${server.port}/eureka/
+#============================================================================
+# INFO
+#============================================================================
+info:
+  app:
+    name: Discovery Server Application
+    description: Discovery Server Application
+    version: 1.0.0
+
+ribbon :
+  serverListRefreshInterval : 5 #Refresh Load Balancer Nodes

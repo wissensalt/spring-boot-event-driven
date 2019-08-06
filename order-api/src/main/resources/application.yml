@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: order-api
   cloud:
     stream:
       kafka:
@@ -64,3 +66,13 @@ db:
   password : pgadmin
   auto-reconnect : true
   ssl : false
+
+#============================================================================
+# EUREKA
+#============================================================================
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    registerWithEureka: true
+    fetchRegistry: true

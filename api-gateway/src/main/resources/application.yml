@@ -1,0 +1,62 @@
+#============================================================================
+# SERVER
+#============================================================================
+server:
+  port: 10000
+#============================================================================
+# SPRING
+#============================================================================
+spring:
+  application:
+    name : api-gateway
+
+#============================================================================
+# ZUUL
+#============================================================================
+zuul:
+  sensitive-headers: Cookie, SetCookie
+#  add-proxy-headers: true
+  prefix: /gateway
+  host:
+    connect-timeout-millis: 60000
+    socket-timeout-millis: 60000
+    max-total-connections: 200
+    max-per-route-connections: 20
+    time-unit: MILLISECONDS
+    time-to-live: 10000
+  routes:
+    api-logger :
+      path : /order/**
+      serviceId : order-api
+
+#============================================================================
+# EUREKA
+#============================================================================
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    registerWithEureka: true
+    fetchRegistry: true
+
+#============================================================================
+# INFO
+#============================================================================
+info:
+  app:
+    name: API Gateway Application
+    description: Zuul KF API Gateway Application
+    version: 1.0.0
+
+#============================================================================
+# RIBBON FOR ZUUL
+#============================================================================
+ribbon:
+  eager-load:
+    enabled : true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
