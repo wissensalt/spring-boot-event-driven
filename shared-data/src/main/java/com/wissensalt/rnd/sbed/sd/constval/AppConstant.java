@@ -25,5 +25,6 @@ public interface AppConstant {
         String CUSTOMER_API = "CUSTOMER-API";
         String PRODUCT_API = "PRODUCT-API";
         String INVENTORY_API = "INVENTORY-API";
+        String PAYMENT_API =  "PAYMENT-API";
     }
 }

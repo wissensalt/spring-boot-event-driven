@@ -64,7 +64,7 @@ spring:
 # DATABASE
 #============================================================================
 db:
-  name : order
+  name : payment
   host : localhost
   port : 5432
   username : moka
@@ -81,3 +81,9 @@ eureka:
       defaultZone: http://localhost:8761/eureka
     registerWithEureka: true
     fetchRegistry: true
+
+#============================================================================
+# SERVER
+#============================================================================
+server:
+  port: 8484

@@ -23,6 +23,7 @@
         <module>inventory-api</module>
         <module>product-api</module>
         <module>shared-data</module>
+        <module>payment-api</module>
     </modules>
 
     <packaging>pom</packaging>
