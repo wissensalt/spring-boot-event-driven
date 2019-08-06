@@ -1,0 +1,17 @@
+.idea/
+spring-boot-event-driven.iml
+api-gateway/api-gateway.iml
+api-gateway/target/
+customer-api/customer-api.iml
+customer-api/target/
+inventory-api/inventory-api.iml
+inventory-api/target/
+order-api/order-api.iml
+order-api/target/
+product-api/product-api.iml
+product-api/target/
+service-registry/service-registry.iml
+service-registry/target/
+shared-data/shared-data.iml
+shared-data/target/
+

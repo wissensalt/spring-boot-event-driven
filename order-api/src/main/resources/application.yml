@@ -1,0 +1,66 @@
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        greetings-in:
+          destination: greetings
+          contentType: application/json
+        greetings-out:
+          destination: greetings
+          contentType: application/json
+        input-update-cart :
+          destination: update-cart
+          contentType: application/json
+        output-update-cart:
+          destination: update-cart
+          contentType: application/json
+        input-rollback:
+          destination: rollback
+          contentType: application/json
+        output-rollback:
+          destination: rollback
+          contentType: application/json
+        input-customer-info:
+          destination: customer-info
+          contentType: application/json
+        output-customer-info:
+          destination: customer-info
+          contentType: application/json
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
+    username: ${db.username}
+    password: ${db.password}
+    hikari:
+      minimumIdle: 1
+      maximumPoolSize: 5
+      idleTimeout: 30000
+      poolName: order-api-conn-pool
+      maxLifetime: 2000000
+      connectionTimeout: 60000
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+            naming_strategy: org.hibernate.cfg.EJB3NamingStrategy
+            dialect: org.hibernate.dialect.PostgreSQL9Dialect
+            ddl-auto: validate     # Hibernate ddl auto (create, create-drop, validate, update)
+
+
+#============================================================================
+# DATABASE
+#============================================================================
+db:
+  name : order
+  host : localhost
+  port : 5432
+  username : moka
+  password : pgadmin
+  auto-reconnect : true
+  ssl : false
