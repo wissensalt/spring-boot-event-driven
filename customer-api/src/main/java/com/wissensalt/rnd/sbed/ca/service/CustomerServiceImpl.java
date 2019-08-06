@@ -39,6 +39,7 @@ public class CustomerServiceImpl implements ICustomerService{
             Customer customer = customerDAO.findByUserName(p_CustomerName);
             if (!Objects.isNull(customer)) {
                 log.info("Customer Already Exist");
+                throw new ServiceException("CUSTOMER ALREADY EXIST");
             } else {
                 log.info("Customer is not Found. {} will be inserted as new Customer", p_CustomerName);
                 customer = new Customer();

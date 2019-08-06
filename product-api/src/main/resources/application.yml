@@ -3,7 +3,16 @@ spring:
     stream:
       kafka:
         binder:
+          transaction:
+            transaction-id-prefix: cart-
+            producer:
+              configuration:
+                retries: 1
+                acks: all
           brokers: localhost:9092
+          configuration:
+            isolation:
+              level: read_commited
       bindings:
         greetings-in:
           destination: greetings
@@ -12,10 +21,10 @@ spring:
           destination: greetings
           contentType: application/json
         input-update-cart :
-          destination: update-cart
+          destination: cart-update
           contentType: application/json
         output-update-cart:
-          destination: update-cart
+          destination: cart-update
           contentType: application/json
         input-rollback:
           destination: rollback

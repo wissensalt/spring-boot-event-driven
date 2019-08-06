@@ -7,11 +7,13 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
  * @since : 2019-08-02
  **/
+@EnableTransactionManagement
 @EnableBinding({
         GreetingStreamOutput.class,
         IEventUpdateCartOutput.class,
@@ -29,7 +31,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "com.wissensalt.rnd.sbed.oa.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
         "com.wissensalt.rnd.sbed.sd.producer",
-//        "com.wissensalt.rnd.sbed.sd.config",
 })
 public class OrderAPIApplication {
     public static void main(String [] args) {

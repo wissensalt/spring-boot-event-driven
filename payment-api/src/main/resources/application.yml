@@ -4,6 +4,15 @@ spring:
       kafka:
         binder:
           brokers: localhost:9092
+          transaction:
+            transaction-id-prefix: cart-
+            producer:
+              configuration:
+                retries: 1
+                acks: all
+          configuration:
+            isolation:
+              level: read_committed
       bindings:
         #        EVENT GREETINGS
         greetings-in:
@@ -23,18 +32,18 @@ spring:
 
         #          EVENT UPDATE CART
         input-update-cart:
-          destination: update-cart
+          destination: cart-update
           contentType: application/json
         output-update-cart:
-          destination: update-cart
+          destination: cart-update
           contentType: application/json
 
         #          EVENT CUSTOMER INFO
         input-customer-info:
-          destination: customer-info
+          destination: cart-customer-info
           contentType: application/json
         output-customer-info:
-          destination: customer-info
+          destination: cart-customer-info
           contentType: application/json
   datasource:
     driver-class-name: org.postgresql.Driver
