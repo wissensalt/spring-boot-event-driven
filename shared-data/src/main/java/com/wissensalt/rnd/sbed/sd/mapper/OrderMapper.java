@@ -20,6 +20,7 @@ public abstract class OrderMapper {
             @Mapping(target = "transactionCode", source = "requestTransactionDTO.transactionCode"),
             @Mapping(target = "totalPrice", source = "requestTransactionDTO.order.totalPrice"),
             @Mapping(target = "id", ignore = true),
+            @Mapping(target = "status", ignore = true),
             @Mapping(target = "createdBy", ignore = true),
             @Mapping(target = "createdOn", ignore = true),
             @Mapping(target = "modifiedBy", ignore = true),

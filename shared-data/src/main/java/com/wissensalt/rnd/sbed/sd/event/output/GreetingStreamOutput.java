@@ -1,4 +1,4 @@
-package com.wissensalt.rnd.sbed.sd.event;
+package com.wissensalt.rnd.sbed.sd.event.output;
 
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;

@@ -1,6 +1,9 @@
 package com.wissensalt.rnd.sbed.payment;
 
-import com.wissensalt.rnd.sbed.sd.event.*;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventUpdateCartInput;
+import com.wissensalt.rnd.sbed.sd.event.output.GreetingStreamOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -26,6 +29,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.payment.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
         "com.wissensalt.rnd.sbed.sd.producer",
+        "com.wissensalt.rnd.sbed.sd.config",
 })
 public class PaymentAPIApplication {
     public static void main(String [] args) {

@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletRequest;
  **/
 public interface IOrderService {
 
-    ResponseEntity conductOrder(HttpServletRequest p_HttpServletRequest, RequestTransactionDTO p_Request) throws ServiceException;
+    ResponseEntity startOrder(HttpServletRequest p_HttpServletRequest, RequestTransactionDTO p_Request) throws ServiceException;
 
     void conductRollBackOrder(RequestRollBackUpdateCartDTO p_Request) throws ServiceException;
 
     void updateOrder(ResponseCustomerDTO p_Customer) throws ServiceException;
+
+    void finishOrder(String p_TransactionCode) throws ServiceException;
 }

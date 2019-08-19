@@ -32,14 +32,28 @@ public class OrderEndPointImpl implements IOrderEndPoint {
     private final RollBackProducer rollBackProducer;
 
     @Override
-    public ResponseEntity conductOrder(HttpServletRequest p_HttpServletRequest, RequestTransactionDTO p_Request) throws EndPointException {
+    public ResponseEntity startOrder(HttpServletRequest p_HttpServletRequest, RequestTransactionDTO p_Request) throws EndPointException {
         try {
-            return orderService.conductOrder(p_HttpServletRequest, p_Request);
+            return orderService.startOrder(p_HttpServletRequest, p_Request);
         } catch (ServiceException e) {
-            RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_Request.getTransactionCode(), "ORDER-API");
-            log.error("Error Conduct Order {}", e.toString());
-            rollBackProducer.sendRollBackInformation(requestRollBack);
-            return new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderEndPointImpl.class, "Error Conduct Order", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return buildErrorException(p_Request.getTransactionCode(), p_HttpServletRequest, e);
         }
+    }
+
+    @Override
+    public ResponseEntity finishOrder(HttpServletRequest p_HttpServletRequest, String p_TransactionCode) throws EndPointException {
+        try {
+            orderService.finishOrder(p_TransactionCode);
+            return ResponseEntity.ok("Ok");
+        } catch (ServiceException e) {
+            return buildErrorException(p_TransactionCode, p_HttpServletRequest, e);
+        }
+    }
+
+    private ResponseEntity buildErrorException(String p_TransactionCode, HttpServletRequest p_HttpServletRequest, Exception e) {
+        RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_TransactionCode, "ORDER-API");
+        log.error("Error Finish Order {}", e.toString());
+        rollBackProducer.sendRollBackInformation(requestRollBack);
+        return new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderEndPointImpl.class, "Error Conduct Order", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

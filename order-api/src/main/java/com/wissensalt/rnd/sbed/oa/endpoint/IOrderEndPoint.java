@@ -5,6 +5,7 @@ import com.wissensalt.rnd.sbed.sd.exception.EndPointException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,5 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 public interface IOrderEndPoint {
 
     @PostMapping("/start")
-    ResponseEntity conductOrder(HttpServletRequest p_HttpServletRequest, @RequestBody RequestTransactionDTO p_Request) throws EndPointException;
+    ResponseEntity startOrder(HttpServletRequest p_HttpServletRequest, @RequestBody RequestTransactionDTO p_Request) throws EndPointException;
+
+    @PostMapping("/finish")
+    ResponseEntity finishOrder(HttpServletRequest p_HttpServletRequest, @RequestParam("transaction_code") String p_TransactionCode) throws EndPointException;
 }

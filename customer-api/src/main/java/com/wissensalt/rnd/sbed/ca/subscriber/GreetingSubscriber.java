@@ -1,7 +1,7 @@
 package com.wissensalt.rnd.sbed.ca.subscriber;
 
 import com.wissensalt.rnd.sbed.sd.Greeting;
-import com.wissensalt.rnd.sbed.sd.event.GreetingStreamInput;
+import com.wissensalt.rnd.sbed.sd.event.input.GreetingStreamInput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.integration.annotation.MessageEndpoint;

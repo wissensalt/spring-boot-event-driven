@@ -1,7 +1,7 @@
 package com.wissensalt.rnd.sbed.sd.producer;
 
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
-import com.wissensalt.rnd.sbed.sd.event.IEventRollBackOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.support.MessageBuilder;

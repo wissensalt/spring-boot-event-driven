@@ -1,7 +1,7 @@
 package com.wissensalt.rnd.sbed.oa.producer;
 
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.event.IEventUpdateCartOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventUpdateCartOutput;
 import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,5 @@
-package com.wissensalt.rnd.sbed.sd.event;
+package com.wissensalt.rnd.sbed.sd.event.input;
 
-import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
@@ -8,10 +7,11 @@ import org.springframework.messaging.SubscribableChannel;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
- * @since : 2019-08-05
+ * @since : 2019-08-03
  **/
-public interface IEventCustomerInfoOutput {
+public interface GreetingStreamInput {
+    String INPUT = "greetings-in";
 
-    @Output(AppConstant.EventCustomerInfo.OUTPUT_CUSTOMER_INFO)
-    MessageChannel outBoundCustomerInfo();
+    @Input(INPUT)
+    SubscribableChannel inboundGreetings();
 }

@@ -1,7 +1,7 @@
 package com.wissensalt.rnd.sbed.oa.service;
 
 import com.wissensalt.rnd.sbed.sd.Greeting;
-import com.wissensalt.rnd.sbed.sd.event.GreetingStreamOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.GreetingStreamOutput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.support.MessageBuilder;

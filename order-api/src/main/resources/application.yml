@@ -1,50 +1,42 @@
 spring:
   cloud:
     stream:
-      kafka:
-        binder:
-          brokers: localhost:9092
-          transaction:
-            transaction-id-prefix: cart-
-            producer:
-              configuration:
-                retries: 1
-                acks: all
-          configuration:
-            isolation:
-              level : read_committed
       bindings:
-        #        EVENT GREETINGS
-        greetings-in:
-          destination: greetings
-          contentType: application/json
+          #        EVENT GREETINGS
         greetings-out:
+          group : greeting-consumer
           destination: greetings
           contentType: application/json
 
-        #          EVENT ROLLBACK
+          #          EVENT ROLLBACK
         input-rollback:
+          group : rollback-consumer
           destination: rollback
           contentType: application/json
         output-rollback:
+          group : rollback-consumer
           destination: rollback
           contentType: application/json
 
-        #          EVENT UPDATE CART
-        input-update-cart:
-          destination: cart-update
-          contentType: application/json
-        output-update-cart:
-          destination: cart-update
-          contentType: application/json
-
-        #          EVENT CUSTOMER INFO
+          #          EVENT CUSTOMER INFO
         input-customer-info:
+          group : customer-info-consumer
           destination: cart-customer-info
           contentType: application/json
-        output-customer-info:
-          destination: cart-customer-info
-          contentType: application/json
+      kafka:
+        binder:
+          required-acks: -1
+        bindings:
+          input-update-cart:
+            consumer:
+              #autoCommitOffset: false
+              #autoCommitOnError: false
+              maxAttempts: 2147483647
+              backOffInitialInterval: 1000
+              backOffMaxInterval: 300000
+              backOffMultiplier: 2.0
+              acknowledge-mode: manual
+              start-offset: earliest
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
@@ -90,3 +82,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
     registerWithEureka: true
     fetchRegistry: true
+
+logging:
+  level:
+    org.apache.kafka : error

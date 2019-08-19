@@ -1,6 +1,10 @@
 package com.wissensalt.rnd.sbed.ca;
 
-import com.wissensalt.rnd.sbed.sd.event.*;
+import com.wissensalt.rnd.sbed.sd.event.input.GreetingStreamInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventUpdateCartInput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventCustomerInfoOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -15,7 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableBinding({
         GreetingStreamInput.class,
-        IEventRollBackInput.class,
         IEventRollBackOutput.class,
         IEventUpdateCartInput.class,
         IEventCustomerInfoOutput.class

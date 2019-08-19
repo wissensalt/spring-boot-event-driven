@@ -1,4 +1,4 @@
-package com.wissensalt.rnd.sbed.sd.event;
+package com.wissensalt.rnd.sbed.sd.event.output;
 
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import org.springframework.cloud.stream.annotation.Output;

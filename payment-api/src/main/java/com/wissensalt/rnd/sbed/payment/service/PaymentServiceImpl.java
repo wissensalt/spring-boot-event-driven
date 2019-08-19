@@ -31,9 +31,17 @@ public class PaymentServiceImpl implements IPaymentService{
     @Transactional
     @Override
     public void conductPayment(RequestTransactionDTO p_Request) throws ServiceException {
-        Payment payment = paymentMapper.toPaymentModel(p_Request);
-        paymentDAO.save(payment);
-        log.info("Success Conduct Payment");
+        try {
+            if (Objects.isNull(paymentDAO.findByTransactionCode(p_Request.getTransactionCode()))) {
+                Payment payment = paymentMapper.toPaymentModel(p_Request);
+                paymentDAO.save(payment);
+                log.info("Success Conduct Payment");
+            } else {
+                log.warn("Previous transaction already finished");
+            }
+        } catch (DAOException e) {
+            log.error("Error Conduct payment");
+        }
     }
 
     @Transactional

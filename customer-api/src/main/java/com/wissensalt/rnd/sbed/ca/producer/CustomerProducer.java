@@ -1,7 +1,7 @@
 package com.wissensalt.rnd.sbed.ca.producer;
 
 import com.wissensalt.rnd.sbed.sd.dto.response.ResponseCustomerDTO;
-import com.wissensalt.rnd.sbed.sd.event.IEventCustomerInfoOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventCustomerInfoOutput;
 import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

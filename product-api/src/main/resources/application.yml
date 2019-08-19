@@ -1,37 +1,36 @@
 spring:
   cloud:
     stream:
-      kafka:
-        binder:
-          transaction:
-            transaction-id-prefix: cart-
-            producer:
-              configuration:
-                retries: 1
-                acks: all
-          brokers: localhost:9092
-          configuration:
-            isolation:
-              level: read_commited
       bindings:
-        greetings-in:
-          destination: greetings
-          contentType: application/json
-        greetings-out:
-          destination: greetings
-          contentType: application/json
-        input-update-cart :
-          destination: cart-update
-          contentType: application/json
-        output-update-cart:
-          destination: cart-update
-          contentType: application/json
+        #          EVENT ROLLBACK
         input-rollback:
+          group: rollback-consumer
           destination: rollback
           contentType: application/json
         output-rollback:
-            destination: rollback
-            contentType: application/json
+          group: rollback-consumer
+          destination: rollback
+          contentType: application/json
+
+        #          EVENT UPDATE CART
+        input-update-cart:
+          group: update-cart-consumer
+          destination: cart-update
+          contentType: application/json
+      kafka:
+        binder:
+          required-acks: -1
+        bindings:
+          input-update-cart:
+            consumer:
+              #autoCommitOffset: false
+              #autoCommitOnError: false
+              maxAttempts: 2147483647
+              backOffInitialInterval: 1000
+              backOffMaxInterval: 300000
+              backOffMultiplier: 2.0
+              acknowledge-mode: manual
+              start-offset: earliest
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${db.host}:${db.port}/${db.name}

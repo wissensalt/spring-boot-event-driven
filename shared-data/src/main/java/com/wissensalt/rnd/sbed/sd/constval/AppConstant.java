@@ -20,8 +20,19 @@ public interface AppConstant {
         String OUTPUT_CUSTOMER_INFO = "output-customer-info";
     }
 
+    interface EventBroadcastRollback {
+        String INPUT_BROADCAST_ROLLBACK = "input-broadcast-rollback";
+        String OUTPUT_BROADCAST_ROLLBACK = "output-broadcast-rollback";
+    }
+
+    interface EventReplyTransaction {
+        String INPUT_REPLY_TRANSACTION = "input-reply-transaction";
+        String OUTPUT_REPLY_TRANSACTION = "output-reply-transaction";
+    }
+
     interface ServiceName {
         String ORDER_API = "ORDER-API";
+        String SAGA_ORCHESTRATOR = "SAGA-ORCHESTRATOR";
         String CUSTOMER_API = "CUSTOMER-API";
         String PRODUCT_API = "PRODUCT-API";
         String INVENTORY_API = "INVENTORY-API";

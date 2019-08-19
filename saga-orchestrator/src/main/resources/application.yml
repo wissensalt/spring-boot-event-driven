@@ -1,0 +1,99 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+
+          #          EVENT ROLLBACK
+        input-rollback:
+          group : rollback-consumer
+          destination: rollback
+          contentType: application/json
+        output-rollback:
+          group : rollback-consumer
+          destination: rollback
+          contentType: application/json
+
+          #          EVENT UPDATE CART
+        output-update-cart:
+          group : update-cart-consumer
+          destination: cart-update
+          contentType: application/json
+        input-update-cart:
+          group: update-cart-consumer
+          destination: cart-update
+          contentType: application/json
+
+          #          EVENT CUSTOMER INFO
+        input-customer-info:
+          group : customer-info-consumer
+          destination: cart-customer-info
+          contentType: application/json
+      kafka:
+        binder:
+          required-acks: -1
+        bindings:
+          input-update-cart:
+            consumer:
+              autoCommitOffset: false
+              autoCommitOnError: false
+              maxAttempts: 2147483647
+              backOffInitialInterval: 1000
+              backOffMaxInterval: 300000
+              backOffMultiplier: 2.0
+              acknowledge-mode: manual
+              start-offset: earliest
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
+    username: ${db.username}
+    password: ${db.password}
+    hikari:
+      minimumIdle: 1
+      maximumPoolSize: 5
+      idleTimeout: 30000
+      poolName: saga-api-conn-pool
+      maxLifetime: 2000000
+      connectionTimeout: 60000
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+            naming_strategy: org.hibernate.cfg.EJB3NamingStrategy
+            dialect: org.hibernate.dialect.PostgreSQL9Dialect
+            ddl-auto: validate     # Hibernate ddl auto (create, create-drop, validate, update)
+
+
+#============================================================================
+# DATABASE
+#============================================================================
+db:
+  name : saga_orchestrator
+  host : localhost
+  port : 5432
+  username : moka
+  password : pgadmin
+  auto-reconnect : true
+  ssl : false
+
+#============================================================================
+# EUREKA
+#============================================================================
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    registerWithEureka: true
+    fetchRegistry: true
+
+logging:
+  level:
+    org.apache.kafka : error
+
+api:
+  base-path: http://localhost:8080
+
+server:
+  port: 8686

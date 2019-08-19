@@ -35,27 +35,28 @@ public class CustomerServiceImpl implements ICustomerService{
     @Transactional
     @Override
     public void handleCustomer(String p_TransactionCode, String p_CustomerName) throws ServiceException {
+        Customer customer = null;
         try {
-            Customer customer = customerDAO.findByUserName(p_CustomerName);
-            if (!Objects.isNull(customer)) {
-                log.info("Customer Already Exist");
-                throw new ServiceException("CUSTOMER ALREADY EXIST");
-            } else {
-                log.info("Customer is not Found. {} will be inserted as new Customer", p_CustomerName);
-                customer = new Customer();
-                customer.setUserName(p_CustomerName);
-                customerDAO.save(customer);
-            }
-
-            try {
-                customerProducer.sendCustomerInformation(new ResponseCustomerDTO(p_TransactionCode, customer.getId()));
-                log.info("Success Send Customer Info to Kafka Broker");
-            } catch (ProducerException e) {
-                log.error("Error Sending Customer Information to Kafka Broker {}", e.toString());
-            }
-
+            customer = customerDAO.findByUserName(p_CustomerName);
         } catch (DAOException e) {
-            log.error("Error Handle Customer {}", e.toString());
+            log.error("Error Find Customer By User Name {}", e.toString());
+        }
+
+        if (!Objects.isNull(customer)) {
+            log.info("Customer Already Exist");
+            throw new ServiceException("CUSTOMER ALREADY EXIST");
+        } else {
+            log.info("Customer is not Found. {} will be inserted as new Customer", p_CustomerName);
+            customer = new Customer();
+            customer.setUserName(p_CustomerName);
+            customerDAO.save(customer);
+        }
+
+        try {
+            customerProducer.sendCustomerInformation(new ResponseCustomerDTO(p_TransactionCode, customer.getId()));
+            log.info("Success Send Customer Info to Kafka Broker");
+        } catch (ProducerException e) {
+            log.error("Error Sending Customer Information to Kafka Broker {}", e.toString());
         }
     }
 }

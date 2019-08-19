@@ -31,6 +31,9 @@ public class Order extends BaseData implements Serializable {
     @Column(name = "total_price")
     private Double totalPrice;
 
+    @Column(name = "status")
+    private Boolean status;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "order")
     private Set<OrderDetail> orderDetails;
 }

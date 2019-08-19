@@ -1,8 +1,8 @@
 package com.wissensalt.rnd.sbed.ia;
 
-import com.wissensalt.rnd.sbed.sd.event.IEventRollBackInput;
-import com.wissensalt.rnd.sbed.sd.event.IEventRollBackOutput;
-import com.wissensalt.rnd.sbed.sd.event.IEventUpdateCartInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventUpdateCartInput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableBinding({
         IEventUpdateCartInput.class,
-        IEventRollBackInput.class,
         IEventRollBackOutput.class
 })
 @EnableJpaRepositories(basePackages = "com.wissensalt.rnd.sbed.ia.dao")
