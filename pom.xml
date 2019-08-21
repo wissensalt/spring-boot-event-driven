@@ -24,6 +24,7 @@
         <module>product-api</module>
         <module>shared-data</module>
         <module>payment-api</module>
+        <module>shared-util</module>
     </modules>
 
     <packaging>pom</packaging>
