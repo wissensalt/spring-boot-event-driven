@@ -1,12 +1,16 @@
 package com.wissensalt.rnd.sbed.oa.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wissensalt.rnd.sbed.oa.dao.IOrderDAO;
 import com.wissensalt.rnd.sbed.oa.validation.OrderValidator;
 import com.wissensalt.rnd.sbed.sd.APIErrorBuilder;
+import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestOrderDetailDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
 import com.wissensalt.rnd.sbed.sd.dto.response.ResponseCustomerDTO;
 import com.wissensalt.rnd.sbed.sd.dto.response.ResponseData;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
@@ -17,6 +21,7 @@ import com.wissensalt.rnd.sbed.sd.model.Order;
 import com.wissensalt.rnd.sbed.sd.model.OrderDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +48,8 @@ public class OrderServiceImpl implements IOrderService {
     private final OrderMapper orderMapper;
     private final OrderDetailMapper orderDetailMapper;
     private final OrderValidator orderValidator;
+    private final ISagaService sagaService;
+    private final ObjectMapper objectMapper;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
@@ -57,8 +64,11 @@ public class OrderServiceImpl implements IOrderService {
             order = orderDAO.save(order);
             log.info("Success Saving Order");
 
+            saveEventState(p_Request);
+
             try {
                 saveDetails(order, p_Request, requestRollBack);
+                sagaService.broadcastOrderTransaction(p_Request);
             } catch (ServiceException e) {
                 result = new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderServiceImpl.class, "Transaction Rolled Back", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -70,6 +80,24 @@ public class OrderServiceImpl implements IOrderService {
         return result;
     }
 
+    private void saveEventState(RequestTransactionDTO p_Request) {
+        String eventState = Strings.EMPTY;
+        try {
+            eventState = objectMapper.writeValueAsString(p_Request);
+        } catch (JsonProcessingException e) {
+            log.error("Error convert request to string JSON {}", e.toString());
+        }
+        RequestUpdateEventStateDetailDTO requestEventState = new RequestUpdateEventStateDetailDTO();
+        requestEventState.setTransactionCode(p_Request.getTransactionCode());
+        requestEventState.setServiceName(ServiceName.ORDER_API);
+        requestEventState.setStatus(true);
+        requestEventState.setPayload(eventState);
+        try {
+            sagaService.updateEventStateDetail(requestEventState);
+        } catch (ServiceException e) {
+            log.error("Error update event state detail {}", e.toString());
+        }
+    }
 
     private void saveDetails(Order order, RequestTransactionDTO p_Request, RequestRollBackUpdateCartDTO p_RequestRollBack) throws ServiceException {
         List<OrderDetail> orderDetailList = new ArrayList<>();

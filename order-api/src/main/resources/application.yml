@@ -8,7 +8,7 @@ spring:
           destination: greetings
           contentType: application/json
 
-          #          EVENT ROLLBACK
+        #          EVENT ROLLBACK
         input-rollback:
           group : rollback-consumer
           destination: rollback
@@ -16,6 +16,17 @@ spring:
         output-rollback:
           group : rollback-consumer
           destination: rollback
+          contentType: application/json
+        #          EVENT ORDER CREATED
+        output-order-created:
+          group : order-created-consumer
+          destination: order-created
+          contentType: application/json
+
+        #          EVENT ORDER CREATED REPLY
+        input-order-created-reply:
+          group: order-created-reply-consumer
+          destination: order-created-reply
           contentType: application/json
 
           #          EVENT CUSTOMER INFO

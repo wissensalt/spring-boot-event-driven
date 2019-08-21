@@ -2,9 +2,10 @@ package com.wissensalt.rnd.sbed.ca;
 
 import com.wissensalt.rnd.sbed.sd.event.input.GreetingStreamInput;
 import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
-import com.wissensalt.rnd.sbed.sd.event.input.IEventUpdateCartInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventOrderCreatedInput;
 import com.wissensalt.rnd.sbed.sd.event.output.IEventCustomerInfoOutput;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -19,8 +20,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableBinding({
         GreetingStreamInput.class,
-        IEventRollBackOutput.class,
-        IEventUpdateCartInput.class,
+        IEventRollBackInput.class,
+        IEventOrderCreatedInput.class,
+        IEventOrderCreatedReplyOutput.class,
         IEventCustomerInfoOutput.class
 })
 @EnableJpaRepositories(basePackages = "com.wissensalt.rnd.sbed.ca")
@@ -29,8 +31,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.ca.service",
         "com.wissensalt.rnd.sbed.ca.producer",
         "com.wissensalt.rnd.sbed.ca.subscriber",
+        "com.wissensalt.rnd.sbed.sd.producerreplyevent",
         "com.wissensalt.rnd.sbed.sd.mapper",
-        "com.wissensalt.rnd.sbed.sd.producer",
         "com.wissensalt.rnd.sbed.sd.config",
 })
 public class CustomerAPIApplication {

@@ -3,11 +3,9 @@ package com.wissensalt.rnd.sbed.oa.endpoint.impl;
 import com.wissensalt.rnd.sbed.oa.endpoint.IOrderEndPoint;
 import com.wissensalt.rnd.sbed.oa.service.IOrderService;
 import com.wissensalt.rnd.sbed.sd.APIErrorBuilder;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.EndPointException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
-import com.wissensalt.rnd.sbed.sd.producer.RollBackProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 public class OrderEndPointImpl implements IOrderEndPoint {
 
     private final IOrderService orderService;
-    private final RollBackProducer rollBackProducer;
 
     @Override
     public ResponseEntity startOrder(HttpServletRequest p_HttpServletRequest, RequestTransactionDTO p_Request) throws EndPointException {
@@ -51,9 +48,9 @@ public class OrderEndPointImpl implements IOrderEndPoint {
     }
 
     private ResponseEntity buildErrorException(String p_TransactionCode, HttpServletRequest p_HttpServletRequest, Exception e) {
-        RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_TransactionCode, "ORDER-API");
         log.error("Error Finish Order {}", e.toString());
-        rollBackProducer.sendRollBackInformation(requestRollBack);
+        /*RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_TransactionCode, "ORDER-API");
+        rollBackProducer.sendRollBackInformation(requestRollBack);*/
         return new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderEndPointImpl.class, "Error Conduct Order", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

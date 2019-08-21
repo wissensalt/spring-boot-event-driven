@@ -1,8 +1,9 @@
 package com.wissensalt.rnd.sbed.ia;
 
 import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventOrderCreatedInput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
 import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
-import com.wissensalt.rnd.sbed.sd.event.input.IEventUpdateCartInput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -16,7 +17,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  **/
 @EnableTransactionManagement
 @EnableBinding({
-        IEventUpdateCartInput.class,
+        IEventOrderCreatedInput.class,
+        IEventOrderCreatedReplyOutput.class,
+        IEventRollBackInput.class,
         IEventRollBackOutput.class
 })
 @EnableJpaRepositories(basePackages = "com.wissensalt.rnd.sbed.ia.dao")
@@ -25,7 +28,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.ia.service",
         "com.wissensalt.rnd.sbed.ia.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
-        "com.wissensalt.rnd.sbed.sd.producer",
+        "com.wissensalt.rnd.sbed.sd.producerrollback",
+        "com.wissensalt.rnd.sbed.sd.producerreplyevent",
         "com.wissensalt.rnd.sbed.sd.config",
 })
 public class InventoryAPIApplication {

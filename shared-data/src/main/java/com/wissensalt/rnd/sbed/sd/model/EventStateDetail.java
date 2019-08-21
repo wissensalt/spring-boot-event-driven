@@ -33,4 +33,7 @@ public class EventStateDetail extends BaseData {
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Column(name = "payload")
+    private String payload;
 }

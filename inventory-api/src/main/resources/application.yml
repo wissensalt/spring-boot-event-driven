@@ -12,11 +12,18 @@ spring:
           destination: rollback
           contentType: application/json
 
-        #          EVENT UPDATE CART
-        input-update-cart:
-          group : update-cart-consumer
-          destination: cart-update
+        #          EVENT ORDER CREATED
+        input-order-created:
+          group: order-created-consumer
+          destination: order-created
           contentType: application/json
+
+        #          EVENT ORDER CREATED REPLY
+        output-order-created-reply:
+          group: order-created-reply-consumer
+          destination: order-created-reply
+          contentType: application/json
+
       kafka:
         binder:
           required-acks: -1
@@ -68,3 +75,8 @@ db:
 
 server:
   port: 8382
+
+
+logging:
+  level:
+    org.apache.kafka : error

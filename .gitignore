@@ -16,3 +16,4 @@ shared-data/shared-data.iml
 shared-data/target/
 payment-api/payment-api.iml
 payment-api/target/
+.DS_Store

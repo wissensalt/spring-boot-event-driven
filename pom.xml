@@ -24,7 +24,6 @@
         <module>product-api</module>
         <module>shared-data</module>
         <module>payment-api</module>
-        <module>saga-orchestrator</module>
     </modules>
 
     <packaging>pom</packaging>

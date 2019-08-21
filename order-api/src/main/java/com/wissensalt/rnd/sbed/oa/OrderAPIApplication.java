@@ -1,10 +1,13 @@
 package com.wissensalt.rnd.sbed.oa;
 
 import com.wissensalt.rnd.sbed.sd.event.input.IEventCustomerInfoInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventOrderCreatedReplyInput;
 import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
+import com.wissensalt.rnd.sbed.sd.event.input.IEventOrderCreatedInput;
 import com.wissensalt.rnd.sbed.sd.event.output.GreetingStreamOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
 import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventUpdateCartOutput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -19,6 +22,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableBinding({
         GreetingStreamOutput.class,
+        IEventOrderCreatedOutput.class,
+        IEventOrderCreatedReplyInput.class,
         IEventRollBackInput.class,
         IEventRollBackOutput.class,
         IEventCustomerInfoInput.class,
@@ -29,9 +34,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.oa.service",
         "com.wissensalt.rnd.sbed.oa.endpoint",
         "com.wissensalt.rnd.sbed.oa.validation",
+        "com.wissensalt.rnd.sbed.oa.producer",
         "com.wissensalt.rnd.sbed.oa.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
-        "com.wissensalt.rnd.sbed.sd.producer",
+        "com.wissensalt.rnd.sbed.sd.producerevent",
+        "com.wissensalt.rnd.sbed.sd.producerrollback",
         "com.wissensalt.rnd.sbed.sd.config",
 })
 public class OrderAPIApplication {

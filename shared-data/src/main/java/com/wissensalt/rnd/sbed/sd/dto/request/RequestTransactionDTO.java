@@ -1,6 +1,5 @@
 package com.wissensalt.rnd.sbed.sd.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.*;
 
 import java.io.Serializable;

@@ -5,9 +5,14 @@ package com.wissensalt.rnd.sbed.sd.constval;
  * @since : 2019-08-05
  **/
 public interface AppConstant {
-    interface EventUpdateCart {
-        String INPUT_UPDATE_CART = "input-update-cart";
-        String OUTPUT_UPDATE_CART = "output-update-cart";
+    interface EventOrderCreated {
+        String INPUT_ORDER_CREATED = "input-order-created";
+        String OUTPUT_ORDER_CREATED = "output-order-created";
+    }
+
+    interface EventOrderCreatedReply {
+        String INPUT_ORDER_CREATED_REPLY = "input-order-created-reply";
+        String OUTPUT_ORDER_CREATED_REPLY = "output-order-created-reply";
     }
 
     interface EventRollBack {
