@@ -10,16 +10,16 @@ spring:
 
         #          EVENT ROLLBACK
         input-rollback:
-          group : rollback-consumer
+          group : rollback-consumer-order
           destination: rollback
           contentType: application/json
         output-rollback:
-          group : rollback-consumer
+          group : rollback-consumer-order, rollback-consumer-inventory, rollback-consumer-customer, rollback-consumer-payment, rollback-consumer-product
           destination: rollback
           contentType: application/json
         #          EVENT ORDER CREATED
         output-order-created:
-          group : order-created-consumer
+          group : order-created-consumer-inventory, order-created-consumer-customer, order-created-consumer-payment, order-created-consumer-product
           destination: order-created
           contentType: application/json
 

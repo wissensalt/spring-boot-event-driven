@@ -15,5 +15,7 @@ public interface ISagaService {
 
     void updateEventStateDetail(RequestUpdateEventStateDetailDTO p_Request) throws ServiceException;
 
+    void saveEventStateHeader(RequestTransactionDTO p_Request) throws ServiceException;
+
     void handleRollback(RequestRollBackUpdateCartDTO p_Request) throws ServiceException;
 }

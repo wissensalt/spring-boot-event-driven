@@ -54,7 +54,6 @@ public class CustomerServiceImpl implements ICustomerService{
 
         if (!Objects.isNull(customer)) {
             log.info("Customer Already Exist");
-            throw new ServiceException("CUSTOMER ALREADY EXIST");
         } else {
             log.info("Customer is not Found. {} will be inserted as new Customer", p_CustomerName);
             customer = new Customer();

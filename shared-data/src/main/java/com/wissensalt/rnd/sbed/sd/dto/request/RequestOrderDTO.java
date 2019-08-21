@@ -2,6 +2,7 @@ package com.wissensalt.rnd.sbed.sd.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
  * @since : 2019-08-02
  **/
+@ToString
 @Getter
 @Setter
 public class RequestOrderDTO implements Serializable {

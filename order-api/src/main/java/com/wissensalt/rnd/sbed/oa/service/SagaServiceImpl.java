@@ -21,8 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.ORDER_API;
+import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.*;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
@@ -36,14 +37,10 @@ public class SagaServiceImpl implements ISagaService {
     private final IEventStateDetailDAO eventStateDetailDAO;
     private final EventOrderProducer eventOrderProducer;
     private final RollBackProducer rollBackProducer;
-    private static final List<String> DEPENDENCY_PROCESS = Arrays.asList("INVENTORY", "PRODUCT", "PAYMENT");
+    private static final List<String> MANDATORY_PROCESS = Arrays.asList(INVENTORY_API, PRODUCT_API, PAYMENT_API);
 
     @Transactional
     public void broadcastOrderTransaction(RequestTransactionDTO p_Request) throws ServiceException {
-        EventState eventState = new EventState();
-        eventState.setTransactionCode(p_Request.getTransactionCode());
-        eventState.setTransactionStatus(false);
-        this.eventStateDAO.save(eventState);
         RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_Request.getTransactionCode(), ORDER_API);
 
         try {
@@ -55,67 +52,74 @@ public class SagaServiceImpl implements ISagaService {
         }
     }
 
+    @Override
+    public void saveEventStateHeader(RequestTransactionDTO p_Request) throws ServiceException {
+        EventState eventState = null;
+        try {
+            eventState = this.eventStateDAO.findByTransactionCode(p_Request.getTransactionCode());
+        } catch (DAOException e) {
+            log.error("Error Find Event State By Transaction Code {} : {}", p_Request.getTransactionCode(), e.toString());
+        }
+
+        if (Objects.isNull(eventState)) {
+            eventState = new EventState();
+            eventState.setTransactionCode(p_Request.getTransactionCode());
+            eventState.setTransactionStatus(false);
+            this.eventStateDAO.save(eventState);
+        }
+    }
+
     @Transactional
     public void updateEventStateDetail(RequestUpdateEventStateDetailDTO p_Request) throws ServiceException {
-        log.info("UPDS {}", p_Request.toString());
-        if (!p_Request.getServiceName().equals(ORDER_API)) {
-            EventState eventState = null;
+        EventStateDetail eventStateDetail = null;
 
+        try {
+            eventStateDetail = this.eventStateDetailDAO.findByTransactionCodeAndServiceName(p_Request.getTransactionCode(), p_Request.getServiceName());
+        } catch (DAOException e) {
+            log.error("Error find Event state detail by transaction code {} and Service Name {} : {}", p_Request.getTransactionCode(), p_Request.getServiceName(), e.toString());
+        }
+
+        if (Objects.isNull(eventStateDetail)) {
+            eventStateDetail = new EventStateDetail();
+            eventStateDetail.setTransactionCode(p_Request.getTransactionCode());
+            eventStateDetail.setServiceName(p_Request.getServiceName());
+        }
+        eventStateDetail.setPayload(p_Request.getPayload());
+        eventStateDetail.setStatus(p_Request.getStatus());
+        eventStateDetail.setRemarks(p_Request.getRemarks());
+        this.eventStateDetailDAO.save(eventStateDetail);
+        boolean passed = true;
+
+        try {
+            List<EventStateDetail> eventStateDetails = this.eventStateDetailDAO.findByTransactionCodeAndStatus(p_Request.getTransactionCode(), true);
+            List<String> successServices = eventStateDetails.stream().map(EventStateDetail::getServiceName).collect(Collectors.toList());
+
+            for (String process : MANDATORY_PROCESS) {
+                if (!successServices.contains(process)) {
+                    passed = false;
+                    break;
+                }
+            }
+        } catch (DAOException e) {
+            log.error("Error check mandatory process : {}", e.toString());
+        }
+
+        if (passed) {
+            log.info("transaction finished");
+            EventState eventState = null;
             try {
                 eventState = this.eventStateDAO.findByTransactionCode(p_Request.getTransactionCode());
             } catch (DAOException e) {
                 log.error("Error Find Event State By Transaction Code {} : {}", p_Request.getTransactionCode(), e.toString());
             }
-
             if (!Objects.isNull(eventState)) {
-                EventStateDetail eventStateDetail = null;
-
-                try {
-                    eventStateDetail = this.eventStateDetailDAO.findByTransactionCodeAndServiceName(p_Request.getTransactionCode(), p_Request.getServiceName());
-                } catch (DAOException e) {
-                    log.error("Error find Event state detail by transaction code {} and Service Name {} : {}", p_Request.getTransactionCode(), p_Request.getServiceName(), e.toString());
-                }
-
-                if (Objects.isNull(eventStateDetail)) {
-                    eventStateDetail = new EventStateDetail();
-                    eventStateDetail.setTransactionCode(p_Request.getTransactionCode());
-                    eventStateDetail.setServiceName(p_Request.getServiceName());
-                }
-
-                eventStateDetail.setStatus(p_Request.getStatus());
-                eventStateDetail.setRemarks(p_Request.getRemarks());
-                this.eventStateDetailDAO.save(eventStateDetail);
-                boolean passed = true;
-
-                try {
-                    List<EventStateDetail> details = this.eventStateDetailDAO.findByTransactionCode(p_Request.getTransactionCode());
-
-                    for (EventStateDetail esd : details) {
-                        if (!DEPENDENCY_PROCESS.contains(esd.getServiceName())) {
-                            passed = false;
-                            break;
-                        }
-                    }
-                } catch (DAOException e) {
-                    log.error("Error check required state : {}", e.toString());
-                }
-
-                if (passed) {
-                    log.info("transaction finished");
-                    eventState.setTransactionStatus(true);
-                    eventStateDAO.save(eventState);
-                    //TODO order completed
-                    // Send message to KAFKA for AO
-                    // update event published completed at
-
-                }
-            } else {
-                log.error("Event State with Transaction Code {} is not Found", p_Request.getTransactionCode());
+                eventState.setTransactionStatus(true);
+                eventStateDAO.save(eventState);
             }
-        } else {
-            log.warn("Nothing todo here... source is from saga it self!");
+            //TODO order completed
+            // Send message to KAFKA for Next Process (e.e AO based on the documents)
+            // update event published completed at
         }
-
     }
 
     public void handleRollback(RequestRollBackUpdateCartDTO p_Request) throws ServiceException {

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wissensalt.rnd.sbed.oa.dao.IOrderDAO;
 import com.wissensalt.rnd.sbed.oa.validation.OrderValidator;
 import com.wissensalt.rnd.sbed.sd.APIErrorBuilder;
-import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestOrderDetailDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
@@ -64,11 +63,11 @@ public class OrderServiceImpl implements IOrderService {
             order = orderDAO.save(order);
             log.info("Success Saving Order");
 
-            saveEventState(p_Request);
-
             try {
                 saveDetails(order, p_Request, requestRollBack);
+                sagaService.saveEventStateHeader(p_Request);
                 sagaService.broadcastOrderTransaction(p_Request);
+                saveEventStateDetail(p_Request);
             } catch (ServiceException e) {
                 result = new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderServiceImpl.class, "Transaction Rolled Back", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -80,7 +79,7 @@ public class OrderServiceImpl implements IOrderService {
         return result;
     }
 
-    private void saveEventState(RequestTransactionDTO p_Request) {
+    private void saveEventStateDetail(RequestTransactionDTO p_Request) {
         String eventState = Strings.EMPTY;
         try {
             eventState = objectMapper.writeValueAsString(p_Request);

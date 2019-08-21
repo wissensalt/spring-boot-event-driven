@@ -4,7 +4,7 @@ spring:
       bindings:
         #          EVENT ROLLBACK
         input-rollback:
-          group : rollback-consumer
+          group : rollback-consumer-inventory
           destination: rollback
           contentType: application/json
         output-rollback:
@@ -14,7 +14,7 @@ spring:
 
         #          EVENT ORDER CREATED
         input-order-created:
-          group: order-created-consumer
+          group: order-created-consumer-inventory
           destination: order-created
           contentType: application/json
 

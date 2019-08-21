@@ -4,7 +4,7 @@ spring:
       bindings:
         #          EVENT ROLLBACK
         input-rollback:
-          group : rollback-consumer
+          group : rollback-consumer-payment
           destination: rollback
           contentType: application/json
         output-rollback:
@@ -14,7 +14,7 @@ spring:
 
         #          EVENT ORDER CREATED
         input-order-created:
-          group: order-created-consumer
+          group: order-created-consumer-payment
           destination: order-created
           contentType: application/json
 
@@ -88,3 +88,7 @@ eureka:
 #============================================================================
 server:
   port: 8484
+
+logging:
+  level:
+    org.apache.kafka : error

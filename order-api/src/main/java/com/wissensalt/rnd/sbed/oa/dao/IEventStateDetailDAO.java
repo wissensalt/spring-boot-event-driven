@@ -13,5 +13,7 @@ import java.util.List;
 public interface IEventStateDetailDAO extends JpaRepository<EventStateDetail, Long> {
     List<EventStateDetail> findByTransactionCode(String p_TransactionCode) throws DAOException;
 
+    List<EventStateDetail> findByTransactionCodeAndStatus(String p_TransactionCode, boolean p_Status) throws DAOException;
+
     EventStateDetail findByTransactionCodeAndServiceName(String p_TransactionCode, String p_ServiceName) throws DAOException;
 }
