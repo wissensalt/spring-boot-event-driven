@@ -7,7 +7,7 @@ import com.wissensalt.rnd.sbed.oa.validation.OrderValidator;
 import com.wissensalt.rnd.sbed.sd.APIErrorBuilder;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestOrderDetailDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
 import com.wissensalt.rnd.sbed.sd.dto.response.ResponseCustomerDTO;
@@ -55,7 +55,7 @@ public class OrderServiceImpl implements IOrderService {
     public ResponseEntity startOrder(HttpServletRequest p_HttpServletRequest, RequestTransactionDTO p_Request) throws ServiceException {
         ResponseEntity result = ResponseEntity.ok(new ResponseData("200", "Success Conduct Order"));
         log.info("start conduct order");
-        RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_Request.getTransactionCode(), ServiceName.ORDER_API);
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Request.getTransactionCode(), ServiceName.ORDER_API);
         if (orderValidator.validate(p_Request)) {
             Order order = orderMapper.toOrderModel(p_Request);
             order.setStatus(false);
@@ -98,7 +98,7 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
-    private void saveDetails(Order order, RequestTransactionDTO p_Request, RequestRollBackUpdateCartDTO p_RequestRollBack) throws ServiceException {
+    private void saveDetails(Order order, RequestTransactionDTO p_Request, RequestRollBackDTO p_RequestRollBack) throws ServiceException {
         List<OrderDetail> orderDetailList = new ArrayList<>();
         for (RequestOrderDetailDTO orderDetail : p_Request.getOrder().getOrderDetails()) {
             OrderDetail detail = orderDetailMapper.toOrderDetailModel(orderDetail);
@@ -117,18 +117,21 @@ public class OrderServiceImpl implements IOrderService {
 
     @Transactional
     @Override
-    public void conductRollBackOrder(RequestRollBackUpdateCartDTO p_Request) throws ServiceException {
+    public void conductRollBackOrder(RequestRollBackDTO p_Request) throws ServiceException {
         try {
-            if (p_Request.getRollbackSource().equals(ServiceName.ORDER_API)) {
-                log.warn("Nothing To Do Rollback has been handled");
-            } else {
-                Order order = orderDAO.findByTransactionCode(p_Request.getTransactionCode());
-                if (!Objects.isNull(order)) {
-                    orderDetailService.handleRollBack(order.getId());
-                    orderDAO.deleteByTransactionCode(p_Request.getTransactionCode());
-                    log.info("Success handle Rollback");
-                }
+            Order order = orderDAO.findByTransactionCode(p_Request.getTransactionCode());
+            if (!Objects.isNull(order)) {
+                orderDetailService.handleRollBack(order.getId());
+                orderDAO.deleteByTransactionCode(p_Request.getTransactionCode());
+                log.info("Success handle Rollback");
             }
+
+            RequestUpdateEventStateDetailDTO requestUpdate = new RequestUpdateEventStateDetailDTO();
+            requestUpdate.setTransactionCode(p_Request.getTransactionCode());
+            requestUpdate.setServiceName(p_Request.getRollbackSource());
+            requestUpdate.setStatus(false);
+            requestUpdate.setRemarks("Rolled Back");
+            sagaService.updateEventStateDetail(requestUpdate);
         } catch (DAOException e) {
             log.error("Error Handle Rollback {}", e.toString());
         }

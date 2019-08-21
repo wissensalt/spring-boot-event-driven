@@ -7,7 +7,7 @@ import com.wissensalt.rnd.sbed.ia.dao.IInventoryDetailDAO;
 import com.wissensalt.rnd.sbed.ia.service.IInventoryService;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestOrderDetailDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
@@ -18,6 +18,7 @@ import com.wissensalt.rnd.sbed.sd.mapper.InventoryMapper;
 import com.wissensalt.rnd.sbed.sd.model.Inventory;
 import com.wissensalt.rnd.sbed.sd.model.InventoryDetail;
 import com.wissensalt.rnd.sbed.sd.producerreplyevent.OrderCreatedReplyProducer;
+import com.wissensalt.rnd.sbed.sd.producerrollback.RollBackProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +47,7 @@ public class InventoryServiceImpl implements IInventoryService {
     private final IInventoryDetailDAO inventoryDetailDAO;
     private final OrderCreatedReplyProducer replyProducer;
     private final ObjectMapper objectMapper;
+    private final RollBackProducer rollBackProducer;
 
     @Transactional
     @Override
@@ -61,7 +64,9 @@ public class InventoryServiceImpl implements IInventoryService {
         inventoryDetailDAO.saveAll(inventoryDetailList);
         log.info("Success Conduct Update Cart Transaction");
 
-        sendReply(p_Request);
+
+        //sendReply(p_Request); // if u want success
+        throw new ServiceException("Test Rollback"); // if u want failure
     }
 
     private void sendReply(RequestTransactionDTO p_Request) {
@@ -83,23 +88,20 @@ public class InventoryServiceImpl implements IInventoryService {
 
     @Transactional
     @Override
-    public void handleRollBack(RequestRollBackUpdateCartDTO p_Request) throws ServiceException {
-        try {
-            if (!p_Request.getRollbackSource().equals(INVENTORY_API)) {
-                List<InventoryDetail> inventoryDetails = inventoryDetailDAO.findByInventory_TransactionCode(p_Request.getTransactionCode());
-                if (inventoryDetails.size() > 0) {
-                    inventoryDetailDAO.deleteAll(inventoryDetails);
-                }
-                Inventory inventory = inventoryDAO.findByTransactionCode(p_Request.getTransactionCode());
-                if (!Objects.isNull(inventory)) {
-                    inventoryDAO.delete(inventory);
-                }
-                log.info("Success Handle RollBack");
-            }else {
-                log.info("Rollback Has Been Handled");
-            }
-        } catch (DAOException e) {
-            log.error("Error Save Handle RollBack Inventory {}", e.toString());
+    public void handleRollBack(RequestRollBackDTO p_Request) throws ServiceException {
+        List<InventoryDetail> inventoryDetails = inventoryDetailDAO.findByInventory_TransactionCode(p_Request.getTransactionCode());
+        if (inventoryDetails.size() > 0) {
+            inventoryDetailDAO.deleteAll(inventoryDetails);
         }
+        List<Inventory> inventory = new ArrayList<>();
+        try {
+            inventory = inventoryDAO.findByTransactionCode(p_Request.getTransactionCode());
+        } catch (DAOException e) {
+            log.error("Error find inventory by trx code {}", p_Request.getTransactionCode());
+        }
+        if (inventory.size() > 0) {
+            inventoryDAO.deleteAll(inventory);
+        }
+        log.info("Success Handle RollBack");
     }
 }

@@ -44,10 +44,10 @@ public class CustomerServiceImpl implements ICustomerService{
 
     @Transactional
     @Override
-    public void handleCustomer(String p_TransactionCode, String p_CustomerName) throws ServiceException {
+    public void handleCustomer(RequestTransactionDTO p_Request) throws ServiceException {
         Customer customer = null;
         try {
-            customer = customerDAO.findByUserName(p_CustomerName);
+            customer = customerDAO.findByUserName(p_Request.getCustomer().getName());
         } catch (DAOException e) {
             log.error("Error Find Customer By User Name {}", e.toString());
         }
@@ -55,32 +55,32 @@ public class CustomerServiceImpl implements ICustomerService{
         if (!Objects.isNull(customer)) {
             log.info("Customer Already Exist");
         } else {
-            log.info("Customer is not Found. {} will be inserted as new Customer", p_CustomerName);
+            log.info("Customer is not Found. {} will be inserted as new Customer", p_Request.getCustomer().getName());
             customer = new Customer();
-            customer.setUserName(p_CustomerName);
+            customer.setUserName(p_Request.getCustomer().getName());
             customerDAO.save(customer);
         }
 
         try {
-            customerProducer.sendCustomerInformation(new ResponseCustomerDTO(p_TransactionCode, customer.getId()));
+            customerProducer.sendCustomerInformation(new ResponseCustomerDTO(p_Request.getTransactionCode(), customer.getId()));
             log.info("Success Send Customer Info to Kafka Broker");
         } catch (ProducerException e) {
             log.error("Error Sending Customer Information to Kafka Broker {}", e.toString());
         }
 
-        sendReply(p_TransactionCode);
+        sendReply(p_Request);
     }
 
-    private void sendReply(String p_TrxCode) {
+    private void sendReply(RequestTransactionDTO p_Request) {
         RequestUpdateEventStateDetailDTO requestUpdateEvent = new RequestUpdateEventStateDetailDTO();
         try {
-            requestUpdateEvent.setPayload(objectMapper.writeValueAsString(p_TrxCode));
+            requestUpdateEvent.setPayload(objectMapper.writeValueAsString(p_Request));
         } catch (JsonProcessingException e) {
             log.error("Error convert request to json string {}", e.toString());
         }
         requestUpdateEvent.setStatus(true);
         requestUpdateEvent.setServiceName(CUSTOMER_API);
-        requestUpdateEvent.setTransactionCode(p_TrxCode);
+        requestUpdateEvent.setTransactionCode(p_Request.getTransactionCode());
         try {
             replyProducer.sendReply(requestUpdateEvent);
         } catch (ProducerException e) {

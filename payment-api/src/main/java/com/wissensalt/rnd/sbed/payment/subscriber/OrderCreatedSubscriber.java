@@ -3,7 +3,7 @@ package com.wissensalt.rnd.sbed.payment.subscriber;
 import com.wissensalt.rnd.sbed.payment.service.IPaymentService;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
@@ -36,7 +36,7 @@ public class OrderCreatedSubscriber {
             paymentService.conductPayment(p_Request);
         } catch (ServiceException e) {
             log.error("Error handling Payment {}", e.toString());
-            rollBackProducer.sendRollBackInformation(new RequestRollBackUpdateCartDTO(p_Request.getTransactionCode(), ServiceName.PAYMENT_API));
+            rollBackProducer.sendRollBackInformation(new RequestRollBackDTO(p_Request.getTransactionCode(), ServiceName.PAYMENT_API));
         }
     }
 }

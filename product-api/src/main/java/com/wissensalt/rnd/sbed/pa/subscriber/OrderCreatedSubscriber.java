@@ -2,7 +2,7 @@ package com.wissensalt.rnd.sbed.pa.subscriber;
 
 import com.wissensalt.rnd.sbed.pa.service.IProductService;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
@@ -33,9 +33,9 @@ public class OrderCreatedSubscriber {
     @StreamListener(AppConstant.EventOrderCreated.INPUT_ORDER_CREATED)
     public void validateProduct(@Payload RequestTransactionDTO p_Request) throws SubscriberException {
         log.info("Received Transaction {} ", p_Request.toString());
-        RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_Request.getTransactionCode(), PRODUCT_API);
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Request.getTransactionCode(), PRODUCT_API);
         try {
-            if (productService.isValidProducts(p_Request.getTransactionCode(), p_Request.getOrder().getOrderDetails())) {
+            if (productService.isValidProducts(p_Request)) {
                 log.info("All Products are valid");
             } else {
                 log.warn("One or more products are not valid");

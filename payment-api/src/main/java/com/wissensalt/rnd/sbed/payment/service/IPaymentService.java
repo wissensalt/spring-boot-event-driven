@@ -1,6 +1,6 @@
 package com.wissensalt.rnd.sbed.payment.service;
 
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 
@@ -12,5 +12,5 @@ public interface IPaymentService {
 
     void conductPayment(RequestTransactionDTO p_Request) throws ServiceException;
 
-    void handleRollBack(RequestRollBackUpdateCartDTO p_Request) throws ServiceException;
+    void handleRollBack(RequestRollBackDTO p_Request) throws ServiceException;
 }

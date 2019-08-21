@@ -1,10 +1,8 @@
 package com.wissensalt.rnd.sbed.pa.service;
 
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestOrderDetailDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
-
-import java.util.List;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
@@ -12,7 +10,7 @@ import java.util.List;
  **/
 public interface IProductService {
 
-    Boolean isValidProducts(String p_TransactionCode, List<RequestOrderDetailDTO> p_OrderDetails) throws ServiceException;
+    Boolean isValidProducts(RequestTransactionDTO p_Request) throws ServiceException;
 
-    void handleRollback(RequestRollBackUpdateCartDTO p_RequestRollBack) throws ServiceException;
+    void handleRollback(RequestRollBackDTO p_RequestRollBack) throws ServiceException;
 }

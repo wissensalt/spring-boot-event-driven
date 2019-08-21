@@ -2,7 +2,7 @@ package com.wissensalt.rnd.sbed.pa.subscriber;
 
 import com.wissensalt.rnd.sbed.pa.service.IProductService;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class RollBackSubscriber {
     private final IProductService productService;
 
     @StreamListener(AppConstant.EventRollBack.INPUT_ROLLBACK)
-    public void handleRollBack(@Payload RequestRollBackUpdateCartDTO p_Request) throws SubscriberException {
+    public void handleRollBack(@Payload RequestRollBackDTO p_Request) throws SubscriberException {
         log.info("Received Rollback Message With Transaction Code {} ", p_Request);
         try {
             productService.handleRollback(p_Request);

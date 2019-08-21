@@ -2,7 +2,7 @@ package com.wissensalt.rnd.sbed.ia.subscriber;
 
 import com.wissensalt.rnd.sbed.ia.service.IInventoryService;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
@@ -33,7 +33,7 @@ public class OrderCreatedSubscriber {
     @StreamListener(AppConstant.EventOrderCreated.INPUT_ORDER_CREATED)
     public void handleInventory(@Payload RequestTransactionDTO p_Request) throws SubscriberException {
         log.info("Received Transaction {} ", p_Request.toString());
-        RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_Request.getTransactionCode(), INVENTORY_API);
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Request.getTransactionCode(), INVENTORY_API);
         try {
             inventoryService.conductTransaction(p_Request);
         } catch (ServiceException e) {

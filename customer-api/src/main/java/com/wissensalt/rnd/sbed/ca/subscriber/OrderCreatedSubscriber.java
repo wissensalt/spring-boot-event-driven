@@ -42,7 +42,7 @@ public class OrderCreatedSubscriber {
             log.error("Error parsing payload from message broker {}", e.toString());
         }
         try {
-            customerService.handleCustomer(payload.getTransactionCode(), payload.getCustomer().getName());
+            customerService.handleCustomer(payload);
             Acknowledgment ack = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class);
             if (!Objects.isNull(ack)) {
                 log.info("Acknowledgement Provided");

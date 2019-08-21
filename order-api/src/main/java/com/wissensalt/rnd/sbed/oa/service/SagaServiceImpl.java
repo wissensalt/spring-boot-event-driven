@@ -3,7 +3,7 @@ package com.wissensalt.rnd.sbed.oa.service;
 import com.wissensalt.rnd.sbed.oa.dao.IEventStateDAO;
 import com.wissensalt.rnd.sbed.oa.dao.IEventStateDetailDAO;
 import com.wissensalt.rnd.sbed.oa.producer.EventOrderProducer;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
@@ -41,7 +41,7 @@ public class SagaServiceImpl implements ISagaService {
 
     @Transactional
     public void broadcastOrderTransaction(RequestTransactionDTO p_Request) throws ServiceException {
-        RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_Request.getTransactionCode(), ORDER_API);
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Request.getTransactionCode(), ORDER_API);
 
         try {
             this.eventOrderProducer.sendUpdateCart(p_Request);
@@ -71,8 +71,55 @@ public class SagaServiceImpl implements ISagaService {
 
     @Transactional
     public void updateEventStateDetail(RequestUpdateEventStateDetailDTO p_Request) throws ServiceException {
-        EventStateDetail eventStateDetail = null;
+        EventState eventState = null;
+        try {
+            eventState = this.eventStateDAO.findByTransactionCode(p_Request.getTransactionCode());
+        } catch (DAOException e) {
+            log.error("Error Find Event State By Transaction Code {} : {}", p_Request.getTransactionCode(), e.toString());
+        }
 
+        if (p_Request.getStatus()) {
+            processEventStateDetail(p_Request);
+
+            boolean passed = true;
+
+            try {
+                List<EventStateDetail> eventStateDetails = this.eventStateDetailDAO.findByTransactionCodeAndStatus(p_Request.getTransactionCode(), true);
+                List<String> successServices = eventStateDetails.stream().map(EventStateDetail::getServiceName).collect(Collectors.toList());
+
+                for (String process : MANDATORY_PROCESS) {
+                    if (!successServices.contains(process)) {
+                        passed = false;
+                        break;
+                    }
+                }
+            } catch (DAOException e) {
+                log.error("Error check mandatory process : {}", e.toString());
+            }
+
+            if (passed) {
+                log.info("transaction finished");
+                if (!Objects.isNull(eventState)) {
+                    eventState.setTransactionStatus(true);
+                    eventStateDAO.save(eventState);
+                }
+                //TODO order completed
+                // Send message to KAFKA for Next Process (e.e AO based on the documents)
+                // update event published completed at
+            }
+        } else {
+            log.info("Transaction Rolled back");
+            if (!Objects.isNull(eventState)) {
+                eventState.setTransactionStatus(false);
+                eventStateDAO.save(eventState);
+            }
+
+            processEventStateDetail(p_Request);
+        }
+    }
+
+    private void processEventStateDetail(RequestUpdateEventStateDetailDTO p_Request) {
+        EventStateDetail eventStateDetail = null;
         try {
             eventStateDetail = this.eventStateDetailDAO.findByTransactionCodeAndServiceName(p_Request.getTransactionCode(), p_Request.getServiceName());
         } catch (DAOException e) {
@@ -88,40 +135,8 @@ public class SagaServiceImpl implements ISagaService {
         eventStateDetail.setStatus(p_Request.getStatus());
         eventStateDetail.setRemarks(p_Request.getRemarks());
         this.eventStateDetailDAO.save(eventStateDetail);
-        boolean passed = true;
-
-        try {
-            List<EventStateDetail> eventStateDetails = this.eventStateDetailDAO.findByTransactionCodeAndStatus(p_Request.getTransactionCode(), true);
-            List<String> successServices = eventStateDetails.stream().map(EventStateDetail::getServiceName).collect(Collectors.toList());
-
-            for (String process : MANDATORY_PROCESS) {
-                if (!successServices.contains(process)) {
-                    passed = false;
-                    break;
-                }
-            }
-        } catch (DAOException e) {
-            log.error("Error check mandatory process : {}", e.toString());
-        }
-
-        if (passed) {
-            log.info("transaction finished");
-            EventState eventState = null;
-            try {
-                eventState = this.eventStateDAO.findByTransactionCode(p_Request.getTransactionCode());
-            } catch (DAOException e) {
-                log.error("Error Find Event State By Transaction Code {} : {}", p_Request.getTransactionCode(), e.toString());
-            }
-            if (!Objects.isNull(eventState)) {
-                eventState.setTransactionStatus(true);
-                eventStateDAO.save(eventState);
-            }
-            //TODO order completed
-            // Send message to KAFKA for Next Process (e.e AO based on the documents)
-            // update event published completed at
-        }
     }
 
-    public void handleRollback(RequestRollBackUpdateCartDTO p_Request) throws ServiceException {
+    public void handleRollback(RequestRollBackDTO p_Request) throws ServiceException {
     }
 }

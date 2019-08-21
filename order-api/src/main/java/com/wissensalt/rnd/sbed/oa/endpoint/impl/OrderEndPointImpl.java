@@ -49,7 +49,7 @@ public class OrderEndPointImpl implements IOrderEndPoint {
 
     private ResponseEntity buildErrorException(String p_TransactionCode, HttpServletRequest p_HttpServletRequest, Exception e) {
         log.error("Error Finish Order {}", e.toString());
-        /*RequestRollBackUpdateCartDTO requestRollBack = new RequestRollBackUpdateCartDTO(p_TransactionCode, "ORDER-API");
+        /*RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_TransactionCode, "ORDER-API");
         rollBackProducer.sendRollBackInformation(requestRollBack);*/
         return new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderEndPointImpl.class, "Error Conduct Order", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
     }

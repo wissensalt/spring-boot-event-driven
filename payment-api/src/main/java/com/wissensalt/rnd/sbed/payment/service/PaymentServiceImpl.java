@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wissensalt.rnd.sbed.payment.dao.IPaymentDAO;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
-import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.INVENTORY_API;
 import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.PAYMENT_API;
 
 /**
@@ -75,20 +74,16 @@ public class PaymentServiceImpl implements IPaymentService{
 
     @Transactional
     @Override
-    public void handleRollBack(RequestRollBackUpdateCartDTO p_Request) throws ServiceException {
-        if (p_Request.getRollbackSource().equals(AppConstant.ServiceName.PAYMENT_API)) {
-            log.warn("Rollback has been handled by exception handler");
-        } else {
-            Payment payment = null;
-            try {
-                payment = paymentDAO.findByTransactionCode(p_Request.getTransactionCode());
-            } catch (DAOException e) {
-                log.error("Error Find Payment By Transaction Code {}", p_Request.getTransactionCode());
-            }
-            if (!Objects.isNull(payment)) {
-                paymentDAO.delete(payment);
-                log.info("Success Handling Rollback");
-            }
+    public void handleRollBack(RequestRollBackDTO p_Request) throws ServiceException {
+        Payment payment = null;
+        try {
+            payment = paymentDAO.findByTransactionCode(p_Request.getTransactionCode());
+        } catch (DAOException e) {
+            log.error("Error Find Payment By Transaction Code {}", p_Request.getTransactionCode());
+        }
+        if (!Objects.isNull(payment)) {
+            paymentDAO.delete(payment);
+            log.info("Success Handling Rollback");
         }
     }
 }

@@ -14,7 +14,7 @@ import java.util.Date;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestRollBackUpdateCartDTO implements Serializable {
+public class RequestRollBackDTO implements Serializable {
     /**
      *
      *
@@ -25,7 +25,7 @@ public class RequestRollBackUpdateCartDTO implements Serializable {
     private Date eventTimeStamp;
     private String remarks;
 
-    public RequestRollBackUpdateCartDTO(String transactionCode, String rollbackSource) {
+    public RequestRollBackDTO(String transactionCode, String rollbackSource) {
         this.transactionCode = transactionCode;
         this.rollbackSource = rollbackSource;
     }

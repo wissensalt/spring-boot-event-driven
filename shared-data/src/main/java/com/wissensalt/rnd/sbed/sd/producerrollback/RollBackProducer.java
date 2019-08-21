@@ -1,6 +1,6 @@
 package com.wissensalt.rnd.sbed.sd.producerrollback;
 
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackUpdateCartDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import org.springframework.util.MimeTypeUtils;
 public class RollBackProducer {
     private final IEventRollBackOutput eventRollBackOutput;
 
-    public void sendRollBackInformation(final RequestRollBackUpdateCartDTO request) {
+    public void sendRollBackInformation(final RequestRollBackDTO request) {
         log.info("Broadcast RollBack Information With Trx Code : {}", request);
         MessageChannel messageChannel = eventRollBackOutput.outBoundRollBackEveryThing();
         messageChannel.send(MessageBuilder
