@@ -15,4 +15,6 @@ Repository for spring-boot-event-driven
 <img src="https://github.com/KNIGHTMASTER/Resources/blob/master/SPRINGBOOT-EVEN-DRIVEN/asynchronous-microservices.png?raw=true"></img>
 
 
+# DB Design
+<img src="https://raw.githubusercontent.com/KNIGHTMASTER/Resources/master/SPRINGBOOT-EVEN-DRIVEN/sb-ev.png" />
 Database design available here : https://dbdiagram.io/d/5d43e562ced98361d6dd3d01
