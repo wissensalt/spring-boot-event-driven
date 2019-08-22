@@ -5,13 +5,13 @@ import com.wissensalt.rnd.sbed.oa.dao.IEventStateDetailDAO;
 import com.wissensalt.rnd.sbed.oa.producer.EventOrderProducer;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestReplyTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
 import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.model.EventState;
 import com.wissensalt.rnd.sbed.sd.model.EventStateDetail;
-import com.wissensalt.rnd.sbed.sd.producerrollback.RollBackProducer;
+import com.wissensalt.rnd.sbed.util.producerrollback.RollBackProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +44,14 @@ public class SagaServiceImpl implements ISagaService {
         RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Request.getTransactionCode(), ORDER_API);
 
         try {
-            this.eventOrderProducer.sendUpdateCart(p_Request);
+            this.eventOrderProducer.produceMessage(p_Request);
         } catch (ProducerException e) {
             log.error("Error Broadcast Order Message to Broker : {}", e.toString());
-            this.rollBackProducer.sendRollBackInformation(requestRollBack);
+            try {
+                this.rollBackProducer.produceMessage(requestRollBack);
+            } catch (ProducerException ex) {
+                log.error("Failed to send rollback message to kafka {}", e.toString());
+            }
             throw new ServiceException("Error Broadcast Order Message to Broker");
         }
     }
@@ -70,7 +74,7 @@ public class SagaServiceImpl implements ISagaService {
     }
 
     @Transactional
-    public void updateEventStateDetail(RequestUpdateEventStateDetailDTO p_Request) throws ServiceException {
+    public void updateEventStateDetail(RequestReplyTransactionDTO p_Request) throws ServiceException {
         EventState eventState = null;
         try {
             eventState = this.eventStateDAO.findByTransactionCode(p_Request.getTransactionCode());
@@ -118,7 +122,7 @@ public class SagaServiceImpl implements ISagaService {
         }
     }
 
-    private void processEventStateDetail(RequestUpdateEventStateDetailDTO p_Request) {
+    private void processEventStateDetail(RequestReplyTransactionDTO p_Request) {
         EventStateDetail eventStateDetail = null;
         try {
             eventStateDetail = this.eventStateDetailDAO.findByTransactionCodeAndServiceName(p_Request.getTransactionCode(), p_Request.getServiceName());

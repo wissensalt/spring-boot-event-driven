@@ -4,7 +4,6 @@ import com.wissensalt.rnd.sbed.sd.event.input.GreetingStreamInput;
 import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
 import com.wissensalt.rnd.sbed.sd.event.input.IEventOrderCreatedInput;
 import com.wissensalt.rnd.sbed.sd.event.output.IEventCustomerInfoOutput;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedOutput;
 import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,9 +30,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.ca.service",
         "com.wissensalt.rnd.sbed.ca.producer",
         "com.wissensalt.rnd.sbed.ca.subscriber",
-        "com.wissensalt.rnd.sbed.sd.producerreplyevent",
+        "com.wissensalt.rnd.sbed.util.producerreplyevent",
         "com.wissensalt.rnd.sbed.sd.mapper",
         "com.wissensalt.rnd.sbed.sd.config",
+        "com.wissensalt.rnd.sbed.util.producerreplyevent",
+        "com.wissensalt.rnd.sbed.util.messaging",
 })
 public class CustomerAPIApplication {
     public static void main(String [] args) {

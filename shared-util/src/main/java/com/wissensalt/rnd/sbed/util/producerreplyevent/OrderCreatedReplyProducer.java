@@ -1,7 +1,7 @@
-package com.wissensalt.rnd.sbed.oa.producer;
+package com.wissensalt.rnd.sbed.util.producerreplyevent;
 
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedOutput;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestReplyTransactionDTO;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
 import com.wissensalt.rnd.sbed.util.messaging.AProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class EventOrderProducer extends AProducer<RequestTransactionDTO> {
+public class OrderCreatedReplyProducer extends AProducer<RequestReplyTransactionDTO> {
 
-    private final IEventOrderCreatedOutput eventOrder;
+    private final IEventOrderCreatedReplyOutput output;
 
     @Override
     public MessageChannel getMessageChannel() {
-        return eventOrder.outboundMessage();
+        return output.outboundMessage();
     }
 }

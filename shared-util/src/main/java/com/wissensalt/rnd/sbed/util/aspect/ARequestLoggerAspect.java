@@ -36,6 +36,7 @@ public abstract class ARequestLoggerAspect implements IRequestLoggerAspect {
 
     @Override
     public Object logRequest(ProceedingJoinPoint joinPoint, RequestLogger requestLogger) throws Throwable {
+        System.out.println("processing log request");
         HttpLog httpLog = new HttpLog();
         RequestAPILogDTO requestAPILogDTO = new RequestAPILogDTO();
         StringBuilder apiLog = new StringBuilder();

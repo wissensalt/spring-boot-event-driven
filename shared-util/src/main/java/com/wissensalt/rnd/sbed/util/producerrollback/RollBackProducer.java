@@ -1,7 +1,7 @@
-package com.wissensalt.rnd.sbed.oa.producer;
+package com.wissensalt.rnd.sbed.util.producerrollback;
 
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedOutput;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
 import com.wissensalt.rnd.sbed.util.messaging.AProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
- * @since : 2019-08-04
+ * @since : 2019-08-05
  **/
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class EventOrderProducer extends AProducer<RequestTransactionDTO> {
+public class RollBackProducer extends AProducer<RequestRollBackDTO> {
 
-    private final IEventOrderCreatedOutput eventOrder;
+    private final IEventRollBackOutput eventRollBackOutput;
 
     @Override
     public MessageChannel getMessageChannel() {
-        return eventOrder.outboundMessage();
+        return eventRollBackOutput.outboundMessage();
     }
 }

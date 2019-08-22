@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.DispatcherServlet;
         IEventRollBackOutput.class,
         IEventCustomerInfoInput.class,
 })
+@EnableAspectJAutoProxy
 @EnableJpaRepositories(basePackages = {"com.wissensalt.rnd.sbed.oa.dao", "com.wissensalt.rnd.sbed.util.dao"})
 @EntityScan(basePackages = "com.wissensalt.rnd.sbed.sd.model")
 @SpringBootApplication(scanBasePackages = {
@@ -39,9 +41,8 @@ import org.springframework.web.servlet.DispatcherServlet;
         "com.wissensalt.rnd.sbed.oa.producer",
         "com.wissensalt.rnd.sbed.oa.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
-        "com.wissensalt.rnd.sbed.sd.producerevent",
-        "com.wissensalt.rnd.sbed.sd.producerrollback",
         "com.wissensalt.rnd.sbed.sd.config",
+        "com.wissensalt.rnd.sbed.util.producerrollback",
         "com.wissensalt.rnd.sbed.util.aspect",
 })
 public class OrderAPIApplication {

@@ -9,7 +9,7 @@ import com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestOrderDetailDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestReplyTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.dto.response.ResponseCustomerDTO;
 import com.wissensalt.rnd.sbed.sd.dto.response.ResponseData;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements IOrderService {
         } catch (JsonProcessingException e) {
             log.error("Error convert request to string JSON {}", e.toString());
         }
-        RequestUpdateEventStateDetailDTO requestEventState = new RequestUpdateEventStateDetailDTO();
+        RequestReplyTransactionDTO requestEventState = new RequestReplyTransactionDTO();
         requestEventState.setTransactionCode(p_Request.getTransactionCode());
         requestEventState.setServiceName(ServiceName.ORDER_API);
         requestEventState.setStatus(true);
@@ -126,7 +126,7 @@ public class OrderServiceImpl implements IOrderService {
                 log.info("Success handle Rollback");
             }
 
-            RequestUpdateEventStateDetailDTO requestUpdate = new RequestUpdateEventStateDetailDTO();
+            RequestReplyTransactionDTO requestUpdate = new RequestReplyTransactionDTO();
             requestUpdate.setTransactionCode(p_Request.getTransactionCode());
             requestUpdate.setServiceName(p_Request.getRollbackSource());
             requestUpdate.setStatus(false);

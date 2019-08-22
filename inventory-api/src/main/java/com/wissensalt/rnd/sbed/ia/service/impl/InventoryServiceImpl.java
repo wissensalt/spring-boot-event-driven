@@ -1,24 +1,18 @@
 package com.wissensalt.rnd.sbed.ia.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wissensalt.rnd.sbed.ia.dao.IInventoryDAO;
 import com.wissensalt.rnd.sbed.ia.dao.IInventoryDetailDAO;
 import com.wissensalt.rnd.sbed.ia.service.IInventoryService;
-import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestOrderDetailDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
-import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.mapper.InventoryDetailMapper;
 import com.wissensalt.rnd.sbed.sd.mapper.InventoryMapper;
 import com.wissensalt.rnd.sbed.sd.model.Inventory;
 import com.wissensalt.rnd.sbed.sd.model.InventoryDetail;
-import com.wissensalt.rnd.sbed.sd.producerreplyevent.OrderCreatedReplyProducer;
-import com.wissensalt.rnd.sbed.sd.producerrollback.RollBackProducer;
+import com.wissensalt.rnd.sbed.util.messaging.TransactionReplySender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.INVENTORY_API;
 
@@ -45,10 +37,7 @@ public class InventoryServiceImpl implements IInventoryService {
     private final InventoryMapper inventoryMapper;
     private final IInventoryDAO inventoryDAO;
     private final IInventoryDetailDAO inventoryDetailDAO;
-    private final OrderCreatedReplyProducer replyProducer;
-    private final ObjectMapper objectMapper;
-    private final RollBackProducer rollBackProducer;
-
+    private final TransactionReplySender transactionReplySender;
     @Transactional
     @Override
     public void conductTransaction(RequestTransactionDTO p_Request) throws ServiceException {
@@ -65,26 +54,10 @@ public class InventoryServiceImpl implements IInventoryService {
         log.info("Success Conduct Update Cart Transaction");
 
 
-        //sendReply(p_Request); // if u want success
-        throw new ServiceException("Test Rollback"); // if u want failure
+        transactionReplySender.send(p_Request, INVENTORY_API, true); // if u want success
+        //throw new ServiceException("Test Rollback"); // if u want failure
     }
 
-    private void sendReply(RequestTransactionDTO p_Request) {
-        RequestUpdateEventStateDetailDTO requestUpdateEvent = new RequestUpdateEventStateDetailDTO();
-        try {
-            requestUpdateEvent.setPayload(objectMapper.writeValueAsString(p_Request));
-        } catch (JsonProcessingException e) {
-            log.error("Error convert request to json string {}", e.toString());
-        }
-        requestUpdateEvent.setStatus(true);
-        requestUpdateEvent.setServiceName(INVENTORY_API);
-        requestUpdateEvent.setTransactionCode(p_Request.getTransactionCode());
-        try {
-            replyProducer.sendReply(requestUpdateEvent);
-        } catch (ProducerException e) {
-            log.error("Failed to send reply order created {}", e.toString());
-        }
-    }
 
     @Transactional
     @Override

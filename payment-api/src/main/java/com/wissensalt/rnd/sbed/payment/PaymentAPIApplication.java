@@ -30,8 +30,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.payment.service",
         "com.wissensalt.rnd.sbed.payment.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
-        "com.wissensalt.rnd.sbed.sd.producerrollback",
-        "com.wissensalt.rnd.sbed.sd.producerreplyevent",
+        "com.wissensalt.rnd.sbed.util.producerrollback",
+        "com.wissensalt.rnd.sbed.util.producerreplyevent",
+        "com.wissensalt.rnd.sbed.util.messaging",
         "com.wissensalt.rnd.sbed.sd.config",
 })
 public class PaymentAPIApplication {

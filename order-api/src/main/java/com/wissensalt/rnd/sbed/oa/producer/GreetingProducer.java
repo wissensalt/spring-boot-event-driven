@@ -1,7 +1,7 @@
 package com.wissensalt.rnd.sbed.oa.producer;
 
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedOutput;
+import com.wissensalt.rnd.sbed.sd.Greeting;
+import com.wissensalt.rnd.sbed.sd.event.output.GreetingStreamOutput;
 import com.wissensalt.rnd.sbed.util.messaging.AProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
- * @since : 2019-08-04
+ * @since : 2019-08-03
  **/
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class EventOrderProducer extends AProducer<RequestTransactionDTO> {
+public class GreetingProducer extends AProducer<Greeting> {
 
-    private final IEventOrderCreatedOutput eventOrder;
+    private final GreetingStreamOutput greetingStreamOutput;
 
     @Override
     public MessageChannel getMessageChannel() {
-        return eventOrder.outboundMessage();
+        return greetingStreamOutput.outboundMessage();
     }
 }

@@ -6,13 +6,14 @@ import com.wissensalt.rnd.sbed.payment.dao.IPaymentDAO;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestReplyTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
 import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.mapper.PaymentMapper;
 import com.wissensalt.rnd.sbed.sd.model.Payment;
-import com.wissensalt.rnd.sbed.sd.producerreplyevent.OrderCreatedReplyProducer;
+import com.wissensalt.rnd.sbed.util.messaging.TransactionReplySender;
+import com.wissensalt.rnd.sbed.util.producerreplyevent.OrderCreatedReplyProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,7 @@ public class PaymentServiceImpl implements IPaymentService{
 
     private final IPaymentDAO paymentDAO;
     private final PaymentMapper paymentMapper;
-    private final ObjectMapper objectMapper;
-    private final OrderCreatedReplyProducer replyProducer;
+    private final TransactionReplySender transactionReplySender;
 
     @Transactional
     @Override
@@ -52,24 +52,7 @@ public class PaymentServiceImpl implements IPaymentService{
             log.error("Error Conduct payment");
         }
 
-        sendReply(p_Request);
-    }
-
-    private void sendReply(RequestTransactionDTO p_Request) {
-        RequestUpdateEventStateDetailDTO requestUpdateEvent = new RequestUpdateEventStateDetailDTO();
-        try {
-            requestUpdateEvent.setPayload(objectMapper.writeValueAsString(p_Request));
-        } catch (JsonProcessingException e) {
-            log.error("Error convert request to json string {}", e.toString());
-        }
-        requestUpdateEvent.setStatus(true);
-        requestUpdateEvent.setServiceName(PAYMENT_API);
-        requestUpdateEvent.setTransactionCode(p_Request.getTransactionCode());
-        try {
-            replyProducer.sendReply(requestUpdateEvent);
-        } catch (ProducerException e) {
-            log.error("Failed to send reply order created {}", e.toString());
-        }
+        transactionReplySender.send(p_Request, PAYMENT_API, true);
     }
 
     @Transactional

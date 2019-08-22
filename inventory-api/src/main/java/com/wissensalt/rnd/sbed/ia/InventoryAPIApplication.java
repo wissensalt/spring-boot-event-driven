@@ -28,9 +28,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.ia.service",
         "com.wissensalt.rnd.sbed.ia.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
-        "com.wissensalt.rnd.sbed.sd.producerrollback",
-        "com.wissensalt.rnd.sbed.sd.producerreplyevent",
         "com.wissensalt.rnd.sbed.sd.config",
+        "com.wissensalt.rnd.sbed.util.producerrollback",
+        "com.wissensalt.rnd.sbed.util.producerreplyevent",
+        "com.wissensalt.rnd.sbed.util.messaging",
 })
 public class InventoryAPIApplication {
     public static void main(String [] args) {

@@ -27,8 +27,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication(scanBasePackages = {
         "com.wissensalt.rnd.sbed.pa.service",
         "com.wissensalt.rnd.sbed.pa.subscriber",
-        "com.wissensalt.rnd.sbed.sd.producerrollback",
-        "com.wissensalt.rnd.sbed.sd.producerreplyevent",
+        "com.wissensalt.rnd.sbed.util.producerrollback",
+        "com.wissensalt.rnd.sbed.util.producerreplyevent",
+        "com.wissensalt.rnd.sbed.util.messaging",
         "com.wissensalt.rnd.sbed.sd.config",
 })
 public class ProductAPIApplication {
