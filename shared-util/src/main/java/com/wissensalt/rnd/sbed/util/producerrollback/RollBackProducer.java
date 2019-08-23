@@ -9,6 +9,10 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Service;
 
 /**
+ * <p>
+ *     Produce rollback event with payload {@link RequestRollBackDTO}
+ * </p>
+ *
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
  * @since : 2019-08-05
  **/

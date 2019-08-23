@@ -13,6 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
  **/
 public interface IRollbackSubscriber {
 
+    /**
+     * <p>
+     *     Receive payload from rollback producer. you can handle it by your own implementation.
+     *     Make sure that your implementation can accept same payload (idempotent).
+     *     There is possibility rollback payload will be send for multiple times.
+     * </p>
+     *
+     * @see RequestRollBackDTO
+     * @see Transactional
+     *
+     * @param p_Request payload from rollback producer
+     * @throws SubscriberException if any
+     */
     @Transactional
     @StreamListener(AppConstant.EventRollBack.INPUT_ROLLBACK)
     void handleRollBack(@Payload RequestRollBackDTO p_Request) throws SubscriberException;

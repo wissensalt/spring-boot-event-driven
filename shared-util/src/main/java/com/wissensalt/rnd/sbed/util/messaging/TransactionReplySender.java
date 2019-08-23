@@ -12,6 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * <p>
+ *     Useful when you want to reply transaction with latest status
+ *     Latest status will be sent as {@link RequestTransactionDTO}
+ * </p>
+ *
+ *  It is mandatory for dangling service to reply channel with status, and optional for non dangling service.
+ *
+ *
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
  * @since : 2019-08-22
  **/
