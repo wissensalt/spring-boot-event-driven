@@ -20,7 +20,7 @@ public class CustomerProducer extends AProducer<ResponseCustomerDTO> {
     private final IEventCustomerInfoOutput eventCustomerInfoOutput;
 
     @Override
-    public MessageChannel getMessageChannel() {
+    public MessageChannel getOutboundMessageChannel() {
         return eventCustomerInfoOutput.outboundMessage();
     }
 }

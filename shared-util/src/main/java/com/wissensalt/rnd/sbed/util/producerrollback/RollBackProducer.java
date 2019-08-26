@@ -24,7 +24,7 @@ public class RollBackProducer extends AProducer<RequestRollBackDTO> {
     private final IEventRollBackOutput eventRollBackOutput;
 
     @Override
-    public MessageChannel getMessageChannel() {
+    public MessageChannel getOutboundMessageChannel() {
         return eventRollBackOutput.outboundMessage();
     }
 }

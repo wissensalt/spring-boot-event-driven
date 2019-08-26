@@ -30,11 +30,11 @@ public abstract class AProducer<DATA> implements IProducer<DATA> {
      */
     @Override
     public void produceMessage(DATA p_DATA) throws ProducerException {
-        getMessageChannel().send(MessageBuilder
+        getOutboundMessageChannel().send(MessageBuilder
                 .withPayload(p_DATA)
                 .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
                 .build());
     }
 
-    protected abstract MessageChannel getMessageChannel();
+    protected abstract MessageChannel getOutboundMessageChannel();
 }

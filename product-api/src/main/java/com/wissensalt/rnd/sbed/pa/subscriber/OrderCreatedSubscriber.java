@@ -34,11 +34,11 @@ public class OrderCreatedSubscriber extends ATransactionSubscriber<RequestTransa
     private final RollBackProducer rollBackProducer;
 
     @Override
-    public void conductTransaction(Message<RequestTransactionDTO> message) throws SubscriberException {
-        log.info("Received Transaction {} ", message.getPayload().toString());
-        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(message.getPayload().getTransactionCode(), PRODUCT_API);
+    public void onMessageArrived(Message<RequestTransactionDTO> p_Message) throws SubscriberException {
+        log.info("Received Transaction {} ", p_Message.getPayload().toString());
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Message.getPayload().getTransactionCode(), PRODUCT_API);
         try {
-            if (productService.isValidProducts(message.getPayload())) {
+            if (productService.isValidProducts(p_Message.getPayload())) {
                 log.info("All Products are valid");
             } else {
                 log.warn("One or more products are not valid");

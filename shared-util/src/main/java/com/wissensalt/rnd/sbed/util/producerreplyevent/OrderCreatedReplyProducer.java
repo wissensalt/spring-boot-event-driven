@@ -20,7 +20,7 @@ public class OrderCreatedReplyProducer extends AProducer<RequestReplyTransaction
     private final IEventOrderCreatedReplyOutput output;
 
     @Override
-    public MessageChannel getMessageChannel() {
+    public MessageChannel getOutboundMessageChannel() {
         return output.outboundMessage();
     }
 }

@@ -34,11 +34,11 @@ public class OrderCreatedSubscriber extends ATransactionSubscriber<RequestTransa
     private final RollBackProducer rollBackProducer;
 
     @Override
-    public void conductTransaction(Message<RequestTransactionDTO> message) throws SubscriberException {
-        log.info("Received Transaction {} ", message.getPayload().toString());
-        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(message.getPayload().getTransactionCode(), INVENTORY_API);
+    public void onMessageArrived(Message<RequestTransactionDTO> p_Message) throws SubscriberException {
+        log.info("Received Transaction {} ", p_Message.getPayload().toString());
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Message.getPayload().getTransactionCode(), INVENTORY_API);
         try {
-            inventoryService.conductTransaction(message.getPayload());
+            inventoryService.conductTransaction(p_Message.getPayload());
         } catch (ServiceException e) {
             log.error("Error Conduct Transaction Inventory {}", e.toString());
             try {

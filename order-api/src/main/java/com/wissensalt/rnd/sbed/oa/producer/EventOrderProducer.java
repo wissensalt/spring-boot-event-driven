@@ -20,7 +20,7 @@ public class EventOrderProducer extends AProducer<RequestTransactionDTO> {
     private final IEventOrderCreatedOutput eventOrder;
 
     @Override
-    public MessageChannel getMessageChannel() {
+    public MessageChannel getOutboundMessageChannel() {
         return eventOrder.outboundMessage();
     }
 }

@@ -20,7 +20,7 @@ public class GreetingProducer extends AProducer<Greeting> {
     private final GreetingStreamOutput greetingStreamOutput;
 
     @Override
-    public MessageChannel getMessageChannel() {
+    public MessageChannel getOutboundMessageChannel() {
         return greetingStreamOutput.outboundMessage();
     }
 }

@@ -33,14 +33,14 @@ public class OrderCreatedSubscriber extends ATransactionSubscriber<RequestTransa
     private final RollBackProducer rollBackProducer;
 
     @Override
-    public void conductTransaction(Message<RequestTransactionDTO> message) throws SubscriberException {
-        log.info("Received Transaction {} ", message.getPayload().toString());
+    public void onMessageArrived(Message<RequestTransactionDTO> p_Message) throws SubscriberException {
+        log.info("Received Transaction {} ", p_Message.getPayload().toString());
         try {
-            paymentService.conductPayment(message.getPayload());
+            paymentService.conductPayment(p_Message.getPayload());
         } catch (ServiceException e) {
             log.error("Error handling Payment {}", e.toString());
             try {
-                rollBackProducer.produceMessage(new RequestRollBackDTO(message.getPayload().getTransactionCode(), ServiceName.PAYMENT_API));
+                rollBackProducer.produceMessage(new RequestRollBackDTO(p_Message.getPayload().getTransactionCode(), ServiceName.PAYMENT_API));
             } catch (ProducerException ex) {
                 log.error("Error send rollback to kafka {}", e.toString());
             }

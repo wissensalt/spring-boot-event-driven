@@ -22,10 +22,10 @@ public interface ITransactionSubscriber<DATA> {
      *
      * @see Transactional
      *
-     * @param p_Payload as payload
+     * @param p_Message as payload
      * @throws SubscriberException if any
      */
     @Transactional
     @StreamListener(AppConstant.EventOrderCreated.INPUT_ORDER_CREATED)
-    void conductTransaction(Message<DATA> p_Payload) throws SubscriberException;
+    void onMessageArrived(DATA p_Message) throws SubscriberException;
 }
