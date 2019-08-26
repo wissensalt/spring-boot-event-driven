@@ -34,4 +34,12 @@ service-registry/.project
 service-registry/.settings/
 shared-data/.project
 shared-data/.settings/
+api-gateway/.classpath
+customer-api/.classpath
+inventory-api/.classpath
+order-api/.classpath
+payment-api/.classpath
+product-api/.classpath
+service-registry/.classpath
+shared-data/.classpath
 .DS_Store
