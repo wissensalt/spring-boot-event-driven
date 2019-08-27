@@ -1,4 +1,12 @@
 spring:
+  data: 
+    mongodb:
+      authentication-database: admin
+      username: admin
+      password: m0k4P0S
+      database: stuck_offline_db
+      port: 27017
+      host: localhost
   cloud:
     stream:
       bindings:
