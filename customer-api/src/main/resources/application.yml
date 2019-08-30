@@ -2,20 +2,15 @@ spring:
   cloud:
     stream:
       bindings:
+        #          EVENT ROLLBACK
+        input-rollback:
+          group : rollback-consumer-inventory
+          destination: rollback
+          contentType: application/json
 #        EVENT GREETINGS
         greetings-in:
           group : greeting-consumer
           destination: greetings
-          contentType: application/json
-
-#          EVENT ROLLBACK
-        input-rollback:
-          group : rollback-consumer-customer
-          destination: rollback
-          contentType: application/json
-        output-rollback:
-          group : rollback-consumer
-          destination: rollback
           contentType: application/json
 
 #          EVENT CUSTOMER INFO

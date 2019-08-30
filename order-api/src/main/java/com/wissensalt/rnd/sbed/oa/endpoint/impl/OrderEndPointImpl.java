@@ -6,6 +6,7 @@ import com.wissensalt.rnd.sbed.sd.APIErrorBuilder;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.EndPointException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
+import com.wissensalt.rnd.sbed.util.aspect.RequestLogger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class OrderEndPointImpl implements IOrderEndPoint {
 
     private final IOrderService orderService;
 
+    @RequestLogger(name = "start-order")
     @Override
     public ResponseEntity startOrder(HttpServletRequest p_HttpServletRequest, RequestTransactionDTO p_Request) throws EndPointException {
         try {
@@ -37,6 +39,7 @@ public class OrderEndPointImpl implements IOrderEndPoint {
         }
     }
 
+    @RequestLogger(name = "finish-order")
     @Override
     public ResponseEntity finishOrder(HttpServletRequest p_HttpServletRequest, String p_TransactionCode) throws EndPointException {
         try {

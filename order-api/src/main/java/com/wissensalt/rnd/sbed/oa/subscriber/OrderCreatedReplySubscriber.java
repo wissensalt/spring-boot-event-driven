@@ -2,8 +2,7 @@ package com.wissensalt.rnd.sbed.oa.subscriber;
 
 import com.wissensalt.rnd.sbed.oa.service.ISagaService;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestUpdateEventStateDetailDTO;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestReplyTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class OrderCreatedReplySubscriber {
     private final ISagaService sagaService;
 
     @StreamListener(AppConstant.EventOrderCreatedReply.INPUT_ORDER_CREATED_REPLY)
-    public void handleEventState(@Payload RequestUpdateEventStateDetailDTO p_Request) throws SubscriberException {
+    public void handleEventState(@Payload RequestReplyTransactionDTO p_Request) throws SubscriberException {
         log.info("Received Event State {} ", p_Request.toString());
         try {
             sagaService.updateEventStateDetail(p_Request);

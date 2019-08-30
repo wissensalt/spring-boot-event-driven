@@ -1,16 +1,15 @@
 package com.wissensalt.rnd.sbed.ia.subscriber;
 
 import com.wissensalt.rnd.sbed.ia.service.IInventoryService;
-import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
+import com.wissensalt.rnd.sbed.util.messaging.ARollbackSubscriber;
+import com.wissensalt.rnd.sbed.util.messaging.IRollbackSubscriber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.integration.annotation.MessageEndpoint;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,18 +17,17 @@ import org.springframework.stereotype.Component;
  * @since : 2019-08-05
  **/
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@MessageEndpoint
 @Component
 @Slf4j
-public class RollBackSubscriber {
+public class InventoryRollBackSubscriber extends ARollbackSubscriber {
 
     private final IInventoryService inventoryService;
 
-    @StreamListener(AppConstant.EventRollBack.INPUT_ROLLBACK)
-    public void handleRollBack(@Payload RequestRollBackDTO p_RequestRollBack) throws SubscriberException {
-        log.info("Received Rollback Message With Transaction Code {} ", p_RequestRollBack.getTransactionCode());
+    @Override
+    public void handleRollBack(RequestRollBackDTO p_Request) throws SubscriberException {
+        log.info("Received Rollback Message With Transaction Code {} ", p_Request.getTransactionCode());
         try {
-            inventoryService.handleRollBack(p_RequestRollBack);
+            inventoryService.handleRollBack(p_Request);
         } catch (ServiceException e) {
             log.error("Error Handling Rollback {}", e.toString());
         }

@@ -4,14 +4,17 @@ import com.wissensalt.rnd.sbed.pa.service.IProductService;
 import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
+import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
-import com.wissensalt.rnd.sbed.sd.producerrollback.RollBackProducer;
+import com.wissensalt.rnd.sbed.util.messaging.ATransactionSubscriber;
+import com.wissensalt.rnd.sbed.util.producerrollback.RollBackProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.integration.annotation.MessageEndpoint;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -25,25 +28,29 @@ import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.PRODUC
 @MessageEndpoint
 @Component
 @Slf4j
-public class OrderCreatedSubscriber {
+public class OrderCreatedSubscriber extends ATransactionSubscriber<RequestTransactionDTO> {
 
     private final IProductService productService;
     private final RollBackProducer rollBackProducer;
 
-    @StreamListener(AppConstant.EventOrderCreated.INPUT_ORDER_CREATED)
-    public void validateProduct(@Payload RequestTransactionDTO p_Request) throws SubscriberException {
-        log.info("Received Transaction {} ", p_Request.toString());
-        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Request.getTransactionCode(), PRODUCT_API);
+    @Override
+    public void onMessageArrived(Message<RequestTransactionDTO> p_Message) throws SubscriberException {
+        log.info("Received Transaction {} ", p_Message.getPayload().toString());
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Message.getPayload().getTransactionCode(), PRODUCT_API);
         try {
-            if (productService.isValidProducts(p_Request)) {
+            if (productService.isValidProducts(p_Message.getPayload())) {
                 log.info("All Products are valid");
             } else {
                 log.warn("One or more products are not valid");
-                rollBackProducer.sendRollBackInformation(requestRollBack);
+                rollBackProducer.produceMessage(requestRollBack);
             }
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             log.error("An Error Occurred when checking Product validity");
-            rollBackProducer.sendRollBackInformation(requestRollBack);
+            try {
+                rollBackProducer.produceMessage(requestRollBack);
+            } catch (ProducerException ex) {
+                log.error("Failed to send rollback message to kafka {}",e.toString());
+            }
         }
     }
 }

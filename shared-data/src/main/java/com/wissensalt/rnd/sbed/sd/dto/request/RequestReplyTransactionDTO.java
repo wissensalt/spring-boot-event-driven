@@ -13,7 +13,7 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Setter
-public class RequestUpdateEventStateDetailDTO implements Serializable {
+public class RequestReplyTransactionDTO implements Serializable {
     /**
      *
      *

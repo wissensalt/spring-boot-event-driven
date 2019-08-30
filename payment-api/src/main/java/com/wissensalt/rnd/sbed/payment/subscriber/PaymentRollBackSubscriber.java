@@ -5,6 +5,7 @@ import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.exception.SubscriberException;
+import com.wissensalt.rnd.sbed.util.messaging.ARollbackSubscriber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,14 @@ import org.springframework.stereotype.Component;
  * @since : 2019-08-05
  **/
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@MessageEndpoint
 @Component
 @Slf4j
-public class RollBackSubscriber {
+public class PaymentRollBackSubscriber extends ARollbackSubscriber {
 
     private final IPaymentService paymentService;
 
-    @StreamListener(AppConstant.EventRollBack.INPUT_ROLLBACK)
-    public void handleRollBack(@Payload RequestRollBackDTO p_Request) throws SubscriberException {
+    @Override
+    public void handleRollBack(RequestRollBackDTO p_Request) throws SubscriberException {
         log.info("Received Rollback Message With Transaction Code {} ", p_Request.getTransactionCode());
         try {
             paymentService.handleRollBack(p_Request);
