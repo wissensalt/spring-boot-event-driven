@@ -2,6 +2,7 @@ package com.wissensalt.rnd.sbed.oa.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wissensalt.rnd.sbed.oa.client.InventoryRestClient;
 import com.wissensalt.rnd.sbed.oa.dao.IOrderDAO;
 import com.wissensalt.rnd.sbed.oa.validation.OrderValidator;
 import com.wissensalt.rnd.sbed.sd.APIErrorBuilder;
@@ -18,6 +19,7 @@ import com.wissensalt.rnd.sbed.sd.mapper.OrderDetailMapper;
 import com.wissensalt.rnd.sbed.sd.mapper.OrderMapper;
 import com.wissensalt.rnd.sbed.sd.model.Order;
 import com.wissensalt.rnd.sbed.sd.model.OrderDetail;
+import feign.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -49,6 +51,7 @@ public class OrderServiceImpl implements IOrderService {
     private final OrderValidator orderValidator;
     private final ISagaService sagaService;
     private final ObjectMapper objectMapper;
+    private final InventoryRestClient inventoryRestClient;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
@@ -63,15 +66,18 @@ public class OrderServiceImpl implements IOrderService {
             order = orderDAO.save(order);
             log.info("Success Saving Order");
 
-            try {
-                saveDetails(order, p_Request, requestRollBack);
-                sagaService.saveEventStateHeader(p_Request);
+            saveDetails(order, p_Request, requestRollBack);
+            sagaService.saveEventStateHeader(p_Request);
+            saveEventStateDetail(p_Request);
+            Response responseInventory = inventoryRestClient.conductTransaction(p_Request);
+            log.info("Inventory Status {}", responseInventory.status());
+            if (responseInventory.status() == 200) {
                 sagaService.broadcastOrderTransaction(p_Request);
-                saveEventStateDetail(p_Request);
-            } catch (ServiceException e) {
-                result = new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderServiceImpl.class, "Transaction Rolled Back", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                throw new ServiceException("Error occurred in inventory"+responseInventory.reason());
             }
         } else {
+            log.info("Transaction duplicate");
             result = new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderServiceImpl.class, "Transaction Rolled Back", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
             throw new ServiceException("Order Is Not valid, transaction rolled back");
         }

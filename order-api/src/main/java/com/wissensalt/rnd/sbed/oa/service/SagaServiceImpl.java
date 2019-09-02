@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class SagaServiceImpl implements ISagaService {
     private final IEventStateDetailDAO eventStateDetailDAO;
     private final EventOrderProducer eventOrderProducer;
     private final RollBackProducer rollBackProducer;
-    private static final List<String> MANDATORY_PROCESS = Arrays.asList(INVENTORY_API, PRODUCT_API, PAYMENT_API);
+    private static final List<String> MANDATORY_PROCESS = Collections.singletonList(INVENTORY_API/*, PRODUCT_API, PAYMENT_API*/);
 
     @Transactional
     public void broadcastOrderTransaction(RequestTransactionDTO p_Request) throws ServiceException {

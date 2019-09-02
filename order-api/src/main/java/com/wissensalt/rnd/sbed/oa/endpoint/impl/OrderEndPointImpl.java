@@ -3,10 +3,14 @@ package com.wissensalt.rnd.sbed.oa.endpoint.impl;
 import com.wissensalt.rnd.sbed.oa.endpoint.IOrderEndPoint;
 import com.wissensalt.rnd.sbed.oa.service.IOrderService;
 import com.wissensalt.rnd.sbed.sd.APIErrorBuilder;
+import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
+import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.EndPointException;
+import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.util.aspect.RequestLogger;
+import com.wissensalt.rnd.sbed.util.producerrollback.RollBackProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
@@ -28,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 public class OrderEndPointImpl implements IOrderEndPoint {
 
     private final IOrderService orderService;
+    private final RollBackProducer rollBackProducer;
 
     @RequestLogger(name = "start-order")
     @Override
@@ -51,9 +57,13 @@ public class OrderEndPointImpl implements IOrderEndPoint {
     }
 
     private ResponseEntity buildErrorException(String p_TransactionCode, HttpServletRequest p_HttpServletRequest, Exception e) {
-        log.error("Error Finish Order {}", e.toString());
-        /*RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_TransactionCode, "ORDER-API");
-        rollBackProducer.sendRollBackInformation(requestRollBack);*/
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_TransactionCode, AppConstant.ServiceName.ORDER_API, new Date(), e.toString());
+        try {
+            rollBackProducer.produceMessage(requestRollBack);
+            log.info("success send rollback to kafka");
+        } catch (ProducerException ex) {
+            ex.printStackTrace();
+        }
         return new ResponseEntity<>(APIErrorBuilder.internalServerError(OrderEndPointImpl.class, "Error Conduct Order", p_HttpServletRequest.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

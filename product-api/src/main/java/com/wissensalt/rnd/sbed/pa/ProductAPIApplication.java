@@ -1,9 +1,7 @@
 package com.wissensalt.rnd.sbed.pa;
 
-import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
 import com.wissensalt.rnd.sbed.sd.event.input.IEventOrderCreatedInput;
+import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -25,7 +23,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication(scanBasePackages = {
         "com.wissensalt.rnd.sbed.pa.service",
         "com.wissensalt.rnd.sbed.pa.subscriber",
-        "com.wissensalt.rnd.sbed.util.producerrollback",
         "com.wissensalt.rnd.sbed.util.producerreplyevent",
         "com.wissensalt.rnd.sbed.util.messaging",
         "com.wissensalt.rnd.sbed.sd.config",

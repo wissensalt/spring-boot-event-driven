@@ -1,10 +1,8 @@
 package com.wissensalt.rnd.sbed.payment;
 
-import com.wissensalt.rnd.sbed.sd.event.input.IEventRollBackInput;
 import com.wissensalt.rnd.sbed.sd.event.input.IEventOrderCreatedInput;
 import com.wissensalt.rnd.sbed.sd.event.output.GreetingStreamOutput;
 import com.wissensalt.rnd.sbed.sd.event.output.IEventOrderCreatedReplyOutput;
-import com.wissensalt.rnd.sbed.sd.event.output.IEventRollBackOutput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

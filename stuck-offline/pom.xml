@@ -8,29 +8,14 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
-    <artifactId>inventory-api</artifactId>
-    <description>Example Spring Boot Event Driven - Inventory API</description>
-    <organization>
-        <name>Wissensalt</name>
-        <url>http://www.wissensalt.com</url>
-    </organization>
-    <developers>
-        <developer>
-            <name>Achmad Fauzi</name>
-            <email>fauzi.knightmaster.achmad@gmail.com</email>
-        </developer>
-    </developers>
+
+    <artifactId>stuck-offline</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.wissensalt.rnd</groupId>
             <artifactId>shared-util</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
         </dependency>
     </dependencies>
 </project>

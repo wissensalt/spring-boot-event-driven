@@ -2,38 +2,11 @@ spring:
   cloud:
     stream:
       bindings:
-          #        EVENT GREETINGS
-        greetings-out:
-          group : greeting-consumer
-          destination: greetings
-          contentType: application/json
 
         #          EVENT ROLLBACK
         input-rollback:
-          group : rollback-consumer-order
-          destination: rollback
-          contentType: application/json
-        output-rollback:
-          #group : rollback-consumer-order, rollback-consumer-inventory, rollback-consumer-customer, rollback-consumer-payment, rollback-consumer-product
           group : rollback-consumer-stuck-offline
           destination: rollback
-          contentType: application/json
-        #          EVENT ORDER CREATED
-        output-order-created:
-          group : order-created-consumer-inventory, order-created-consumer-customer, order-created-consumer-payment, order-created-consumer-product
-          destination: order-created
-          contentType: application/json
-
-        #          EVENT ORDER CREATED REPLY
-        input-order-created-reply:
-          group: order-created-reply-consumer
-          destination: order-created-reply
-          contentType: application/json
-
-          #          EVENT CUSTOMER INFO
-        input-customer-info:
-          group : customer-info-consumer
-          destination: cart-customer-info
           contentType: application/json
       kafka:
         binder:
@@ -77,13 +50,19 @@ spring:
 # DATABASE
 #============================================================================
 db:
-  name : order
+  name : product
   host : localhost
   port : 5432
   username : moka
   password : pgadmin
   auto-reconnect : true
   ssl : false
+
+#============================================================================
+# SERVER
+#============================================================================
+server:
+  port: 8787
 
 #============================================================================
 # EUREKA
@@ -98,7 +77,3 @@ eureka:
 logging:
   level:
     org.apache.kafka : error
-
-inventory:
-  api:
-    base-path: http://localhost:8382

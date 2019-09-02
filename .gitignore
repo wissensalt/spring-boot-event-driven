@@ -66,3 +66,7 @@ service-registry/.classpath
 payment-api/.classpath
 
 payment-api/.factorypath
+
+stuck-offline/target/
+
+*.iml

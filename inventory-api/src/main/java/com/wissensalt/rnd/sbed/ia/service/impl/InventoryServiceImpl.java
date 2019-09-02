@@ -47,11 +47,9 @@ public class InventoryServiceImpl implements IInventoryService {
             inventoryDetailList.add(inventoryDetailDAO.save(inventoryDetail));
         }
         inventoryDetailDAO.saveAll(inventoryDetailList);
-        log.info("Success Conduct Update Cart Transaction");
+        log.info("Success Conduct Transaction");
 
-
-//        transactionReplySender.send(p_Request, INVENTORY_API, true); // if u want success
-        //throw new ServiceException("Test Rollback"); // if u want failure
+//        throw new ServiceException("Test Rollback"); // if u want failure
     }
 
 

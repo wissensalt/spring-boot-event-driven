@@ -39,6 +39,7 @@ import org.springframework.web.servlet.DispatcherServlet;
         "com.wissensalt.rnd.sbed.oa.endpoint",
         "com.wissensalt.rnd.sbed.oa.validation",
         "com.wissensalt.rnd.sbed.oa.producer",
+        "com.wissensalt.rnd.sbed.oa.client",
         "com.wissensalt.rnd.sbed.oa.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
         "com.wissensalt.rnd.sbed.sd.config",
