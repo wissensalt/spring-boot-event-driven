@@ -2,15 +2,6 @@ spring:
   cloud:
     stream:
       bindings:
-        #          EVENT ROLLBACK
-        input-rollback:
-          group : rollback-consumer-payment
-          destination: rollback
-          contentType: application/json
-        output-rollback:
-          group : rollback-consumer
-          destination: rollback
-          contentType: application/json
 
         #          EVENT ORDER CREATED
         input-order-created:

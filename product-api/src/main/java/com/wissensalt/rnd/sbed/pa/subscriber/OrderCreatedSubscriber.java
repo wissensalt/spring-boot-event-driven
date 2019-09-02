@@ -31,26 +31,19 @@ import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.PRODUC
 public class OrderCreatedSubscriber extends ATransactionSubscriber<RequestTransactionDTO> {
 
     private final IProductService productService;
-    private final RollBackProducer rollBackProducer;
 
     @Override
-    public void onMessageArrived(Message<RequestTransactionDTO> p_Message) throws SubscriberException {
-        log.info("Received Transaction {} ", p_Message.getPayload().toString());
-        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Message.getPayload().getTransactionCode(), PRODUCT_API);
+    public void onMessageArrived(RequestTransactionDTO p_Message) throws SubscriberException {
+        log.info("Received Transaction {} ", p_Message.toString());
+        RequestRollBackDTO requestRollBack = new RequestRollBackDTO(p_Message.getTransactionCode(), PRODUCT_API);
         try {
-            if (productService.isValidProducts(p_Message.getPayload())) {
+            if (productService.isValidProducts(p_Message)) {
                 log.info("All Products are valid");
             } else {
                 log.warn("One or more products are not valid");
-                rollBackProducer.produceMessage(requestRollBack);
             }
         } catch (Exception e) {
             log.error("An Error Occurred when checking Product validity");
-            try {
-                rollBackProducer.produceMessage(requestRollBack);
-            } catch (ProducerException ex) {
-                log.error("Failed to send rollback message to kafka {}",e.toString());
-            }
         }
     }
 }

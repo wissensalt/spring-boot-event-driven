@@ -12,7 +12,6 @@ import com.wissensalt.rnd.sbed.sd.mapper.InventoryDetailMapper;
 import com.wissensalt.rnd.sbed.sd.mapper.InventoryMapper;
 import com.wissensalt.rnd.sbed.sd.model.Inventory;
 import com.wissensalt.rnd.sbed.sd.model.InventoryDetail;
-import com.wissensalt.rnd.sbed.util.messaging.TransactionReplySender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.wissensalt.rnd.sbed.sd.constval.AppConstant.ServiceName.INVENTORY_API;
 
 /**
  * @author : <a href="mailto:fauzi.knightmaster.achmad@gmail.com">Achmad Fauzi</a>
@@ -37,7 +34,6 @@ public class InventoryServiceImpl implements IInventoryService {
     private final InventoryMapper inventoryMapper;
     private final IInventoryDAO inventoryDAO;
     private final IInventoryDetailDAO inventoryDetailDAO;
-    private final TransactionReplySender transactionReplySender;
     @Transactional
     @Override
     public void conductTransaction(RequestTransactionDTO p_Request) throws ServiceException {
@@ -54,7 +50,7 @@ public class InventoryServiceImpl implements IInventoryService {
         log.info("Success Conduct Update Cart Transaction");
 
 
-        transactionReplySender.send(p_Request, INVENTORY_API, true); // if u want success
+//        transactionReplySender.send(p_Request, INVENTORY_API, true); // if u want success
         //throw new ServiceException("Test Rollback"); // if u want failure
     }
 

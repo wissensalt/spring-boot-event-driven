@@ -19,8 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableBinding({
         IEventOrderCreatedInput.class,
         IEventOrderCreatedReplyOutput.class,
-        IEventRollBackOutput.class,
-        IEventRollBackInput.class
 })
 @EnableJpaRepositories(basePackages = "com.wissensalt.rnd.sbed.pa.dao")
 @EntityScan(basePackages = "com.wissensalt.rnd.sbed.sd.model")

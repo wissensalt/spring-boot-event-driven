@@ -1,19 +1,13 @@
 package com.wissensalt.rnd.sbed.payment.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wissensalt.rnd.sbed.payment.dao.IPaymentDAO;
-import com.wissensalt.rnd.sbed.sd.constval.AppConstant;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestRollBackDTO;
 import com.wissensalt.rnd.sbed.sd.dto.request.RequestTransactionDTO;
-import com.wissensalt.rnd.sbed.sd.dto.request.RequestReplyTransactionDTO;
 import com.wissensalt.rnd.sbed.sd.exception.DAOException;
-import com.wissensalt.rnd.sbed.sd.exception.ProducerException;
 import com.wissensalt.rnd.sbed.sd.exception.ServiceException;
 import com.wissensalt.rnd.sbed.sd.mapper.PaymentMapper;
 import com.wissensalt.rnd.sbed.sd.model.Payment;
 import com.wissensalt.rnd.sbed.util.messaging.TransactionReplySender;
-import com.wissensalt.rnd.sbed.util.producerreplyevent.OrderCreatedReplyProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

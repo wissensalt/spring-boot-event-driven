@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         GreetingStreamOutput.class,
         IEventOrderCreatedInput.class,
         IEventOrderCreatedReplyOutput.class,
-        IEventRollBackInput.class,
-        IEventRollBackOutput.class,
 })
 @EnableJpaRepositories(basePackages = "com.wissensalt.rnd.sbed.payment.dao")
 @EntityScan(basePackages = "com.wissensalt.rnd.sbed.sd.model")
@@ -30,7 +28,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.wissensalt.rnd.sbed.payment.service",
         "com.wissensalt.rnd.sbed.payment.subscriber",
         "com.wissensalt.rnd.sbed.sd.mapper",
-        "com.wissensalt.rnd.sbed.util.producerrollback",
         "com.wissensalt.rnd.sbed.util.producerreplyevent",
         "com.wissensalt.rnd.sbed.util.messaging",
         "com.wissensalt.rnd.sbed.sd.config",
